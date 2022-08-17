@@ -1,0 +1,22 @@
++++
+title = "Theme Components"
+linktitle = "Theme Components"
+description = "Hugo provides advanced theming support with Theme Components."
+date = 2017-03-02T12:00:00-05:00
+categories = ["hugo modules"]
+keywords = ["themes", "theme", "source", "organization", "directories"]
+weight = 50
+sections_weight = 50
+draft = false
+aliases = ["/themes/customize/", "/themes/customizing/"]
+toc = true
+
+[menu]
+[menu.docs]
+parent = "modules"
+weight = 50
++++
+
+# Front Matter
+
+This document is test data for Front Matter.
