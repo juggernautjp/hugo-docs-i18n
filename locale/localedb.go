@@ -17,13 +17,13 @@ import (
 
 // Constant
 const regExp = `^\|\s+(?P<lang>(?:[-a-zA-Z]+)(?:\s\((?:[a-zA-Z\.]+)(?:\s[a-zA-Z]+)*\))?)\s+\|\s+(?P<code>(?:[a-z]{2})(?:-[a-z]{2})?)\s+\|$`
-const template = "{ \"lang\": \"$lang\", \"code\": \"$code\" },\n"
+const template = "  { \"lang\": \"$lang\", \"code\": \"$code\" },\n"
 const header = "{ \"locale\": [\n"
 const footer = "{}\n]}\n"
 
 
-// Read Locale Markdown file
-func ReadLocaleFile(infn, outfn string) error {
+// Convert Locale Markdown file to JSON file
+func ConvertLocaleFile(infn, outfn string) error {
 	// open the file
 	infile, err := os.Open(infn)
 	if err != nil {
@@ -48,7 +48,7 @@ func ReadLocaleFile(infn, outfn string) error {
 	s := bufio.NewScanner(infile)
 	for s.Scan() {
 		var line string = s.Text()
-		fmt.Println(line)
+		// fmt.Println(line)
 		// Regex pattern captures "key: value" pair from the content.
 		pattern := regexp.MustCompile(regExp)
 
@@ -58,7 +58,7 @@ func ReadLocaleFile(infn, outfn string) error {
 			// Apply the captured submatches to the template and append the output to the result.
 			result = pattern.ExpandString(result, template, line, submatches)
 		}
-		fmt.Println(string(result))
+		// fmt.Println(string(result))
 		fmt.Fprint(outfile, string(result))
 	}
 	if err := s.Err(); err != nil {

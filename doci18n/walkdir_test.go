@@ -11,6 +11,7 @@ import (
 	"io/fs"
 	"os"
 	"log"
+	"strings"
 	"path/filepath"
 	"reflect"
 	"testing"
@@ -22,6 +23,7 @@ func createEmptyFile(file string) {
 	}
 }
 
+// Test for WalkDir()
 func TestWalkDir(t *testing.T) {
 	dir, err := os.MkdirTemp("", "example")
 	if err != nil {
@@ -50,6 +52,7 @@ func TestWalkDir(t *testing.T) {
 	}
 }
 
+// Test for WalkDir2()
 func TestWalkDir2(t *testing.T) {
 	dir, err := os.MkdirTemp("", "example")
 	if err != nil {
@@ -66,9 +69,9 @@ func TestWalkDir2(t *testing.T) {
 
 	got, err := WalkDir2(dir, func(path string, d fs.DirEntry) error {
 		if d.IsDir() {
-			fmt.Println("walkDirFunc dir: ", path)
+			fmt.Println("walkDirFunc dir: ", path, d.Name())
 		} else {
-			fmt.Println("walkDirFunc file: ", path)
+			fmt.Println("walkDirFunc file: ", path, d.Name())
 		}
 		return nil;
 	})
@@ -83,4 +86,60 @@ func TestWalkDir2(t *testing.T) {
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("WalkDir2():\ngot  %v\nwant %v", got, want)
 	}
+}
+
+// Test for WalkDir3()
+func TestWalkDir3(t *testing.T) {
+	const path = "testdata/in"
+	const path2 = "testdata/out"
+	// Initialize path2 directory
+	if IsExist(path2) {
+		os.RemoveAll(path2)
+		os.Mkdir(path2, 0755)
+	}
+
+	// WalkDir3()
+	err := WalkDir3(path, path2, func(path, path2 string, d fs.DirEntry) error {
+		if d.IsDir() {
+			os.Mkdir(path2, 0755)
+		} else {
+			createEmptyFile(path2)
+		}
+		return nil;
+	})
+	if err != nil {
+		t.Errorf("WalkDir3: %v", err)
+	}
+
+	// get the list of directory/file
+	want, err := WalkDir(path)
+	if err != nil {
+		t.Errorf("WalkDir3: %v", err)
+	}
+	got, err := WalkDir(path2)
+	if err != nil {
+		t.Errorf("WalkDir3: %v", err)
+	}
+
+	// Test each Field of Struct
+	failFunc := func(in, exp, act string) {
+		t.Errorf("Path not equal: `%s`\n"+
+			"expected: %v\n"+
+			"actual  : %v\n", in, exp, act)
+	}
+
+	// check if the list is equal
+	for k, v := range want {
+		srcF := strings.ReplaceAll(v, filepath.FromSlash(path), "")
+		dstF := strings.ReplaceAll(got[k], filepath.FromSlash(path2), "")
+		if srcF != dstF {
+			failFunc(v, srcF, dstF)
+		}
+	}
+	/* can not use reflect.DeepEqual(), 
+	   because it can not compare "testdata\in\dir_c\file_c" and "testdata\out\dir_c\file_c"
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("WalkDir3():\ngot  %v\nwant %v", got, want)
+	}
+	*/
 }

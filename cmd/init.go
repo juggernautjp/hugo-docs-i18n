@@ -23,6 +23,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -46,6 +47,13 @@ For example of Japanese localization:
 $ hugo-docs-i18n init --locale ja`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("init called: ", dstLocale)
+		if dstLocale == "" {
+			log.Fatalln(`--locale flag should be specified.
+	"search" command can search locale code for the translation language. `)
+		}
+		if err := viper.WriteConfig(); err != nil {
+			log.Fatalf("Error when writing config file: %s\n", err)
+		}
 	},
 }
 
@@ -64,7 +72,7 @@ func init() {
 	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	initCmd.Flags().StringVar(&contentDir, "content-dir", "content", "content directory for target language")
 	initCmd.Flags().StringVar(&languageName, "lang-name", "", "name of target language")
-	initCmd.Flags().IntVar(&weight, "weight", 1, "weight")
+	initCmd.Flags().IntVar(&weight, "weight", 2, "weight")
 	initCmd.Flags().StringVar(&time_format_default, "time-format-default", "2006/02/01", "default time format")
 	initCmd.Flags().StringVar(&time_format_blog, "time-format-blog", "2006/02/01", "blog's time format")
 	viper.BindPFlag("content-dir", initCmd.Flags().Lookup("content-dir"))

@@ -25,34 +25,31 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-// localedbCmd represents the localedb command
-var localedbCmd = &cobra.Command{
-	Use:   "localedb",
-	Short: "Create Locale Database from ISO 639-1 standard language codes",
-	Long: `hugo-docs-i18n init command need locale code for translated language.
-This command create locale database from the Markdown file of the follows:
-
-ISO 639-1 standard language codes:
-https://www.andiamo.co.uk/resources/iso-language-codes/
-
-The above file is saved as data/ISO_639-1.md.`,
+// outputCmd represents the output command
+var outputCmd = &cobra.Command{
+	Use:   "output",
+	Short: "(for testing) output all configuration registries",
+	Long: `Debug prints all configuration registries for debugging purposes.
+	viper package provide debug function.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("localedb called")
+		fmt.Println("output called")
+		viper.Debug()
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(localedbCmd)
+	debugCmd.AddCommand(outputCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// localedbCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// outputCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// localedbCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// outputCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

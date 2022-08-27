@@ -16,23 +16,25 @@ import (
 	"path/filepath"
 	// "reflect"
 	"testing"
+
+	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
 
 // go:embed testdata/ISO_639-1.json
 // var sampleBytes []byte
 
-// Sample Front Matter
+// Locale (lang/code pair) data
 type langPair struct {
-  lang string `json:"lang"`
-  code string `json:"code"`
+	lang string `json:"lang"`
+	code string `json:"code"`
 }
 
-type Sample struct {
-  locale []langPair `json:"locale"`
+type langJSON struct {
+	locale []langPair `json:"locale"`
 }
 
-// Test for ReadLocaleFile()
-func TestReadLocaleFile(t *testing.T) {
+// Test for ConvertLocaleFile()
+func TestConvertLocaleFile(t *testing.T) {
 	const dir = "testdata"
 	const infn = "ISO_639-1.json"
 	infname := filepath.Join(dir, infn)
@@ -41,26 +43,33 @@ func TestReadLocaleFile(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	// Test data #1: Locale (lang/code pair) date from JSON
-	var wantJson Sample
+	// Test data #1: Locale (lang/code pair) data from JSON
+	var wantJson langJSON
 	if err := json.Unmarshal(sampleBytes, &wantJson); err != nil {
 		panic(err)
 	}
 	// fmt.Printf("%+v\n", wantJson)
 
-	// Test data #2: Locale (lang/code pair) date from Markdown file
+	// Prepare for Test data #2
 	const outfn = "out.json"
+	const inmdfn = "ISO_639-1.md"
+	inmdfname := filepath.Join(dir, inmdfn) 
 	outfname := filepath.Join(dir, outfn)
-	if err := ReadLocaleFile("testdata/ISO_639-1.md", outfname); err != nil {
+	if doci18n.IsExist(outfname) {
+		os.Remove(outfname)
+	}
+
+	// Test data #2: Locale (lang/code pair) data from Markdown file
+	if err := ConvertLocaleFile(inmdfname, outfname); err != nil {
 		panic(err)
 	}
 	
-	// Test data #3: Locale (lang/code pair) date from JSON output by #2
+	// Test data #3: Locale (lang/code pair) data from JSON output by #2
 	contentBytes, err := os.ReadFile(outfname)
 	if err != nil {
 		panic(err)
 	}
-	var gotJson Sample
+	var gotJson langJSON
 	if err := json.Unmarshal(contentBytes, &gotJson); err != nil {
 		panic(err)
 	}
@@ -84,7 +93,7 @@ func TestReadLocaleFile(t *testing.T) {
 	// Run each test data
 	for i, lp := range wantJson.locale {
 		// Test Run
-		t.Run("locale rest", func(t *testing.T) {
+		t.Run("locale lang/code pairs", func(t *testing.T) {
 			checkFunc(&lp, &gotJson.locale[i])
 		})
 	}

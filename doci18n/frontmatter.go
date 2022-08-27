@@ -12,70 +12,69 @@ package doci18n
 import (
 	"os"
 	"bytes"
-	// "fmt"
-	"log"
+	"fmt"
+	// "log"
 	"strings"
-	"unsafe"
-	"encoding/json"
+	// "unsafe"
+	// "encoding/json"
 	"time"
 
 	// "gopkg.in/yaml.v2"
 	// "github.com/BurntSushi/toml"
 	// toml "github.com/pelletier/go-toml/v2"
+	"github.com/gohugoio/hugo/parser/metadecoders"
 	"github.com/gohugoio/hugo/parser/pageparser"
+	"github.com/gohugoio/hugo/parser"
 	"github.com/gohugoio/hugo/hugofs/files"
 	"github.com/spf13/cast"
 )
 
-// github.com/gohugoio/hugo/hugolib/page_meta.go
-type pageMeta struct {
-	draft     bool
-	title     string
+// File is exist?
+func IsExist(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil
 }
 
-func (pm *pageMeta) Draft() bool {
-	return pm.draft
+// File is empty?
+func IsEmpty(filename string) bool {
+	fi, err := os.Stat(filename)
+	return err == nil && fi.Size() == 0
 }
 
-func (pm *pageMeta) Title() string {
-	return pm.title
+// File is not empty?
+func IsNotEmpty(filename string) bool {
+	fi, err := os.Stat(filename)
+	return err == nil && fi.Size() > 0
 }
 
-// get Draft from Front Matter
-func (pm *pageMeta) setMetadata(frontmatter map[string]any) error {
-	// var draft *bool
-	for k, v := range frontmatter {
-		loki := strings.ToLower(k)
-		switch loki {
-		case "title":
-			pm.title = cast.ToString(v)
-		case "draft":
-			// draft = new(bool)
-			// *draft = cast.ToBool(v)
-			pm.draft = cast.ToBool(v)
-		}
-	}
+// Is directory?
+func IsDir(filename string) bool {
+	fi, err := os.Stat(filename)
+	return err == nil && fi.IsDir()
 }
 
-// Read Front Matter and Contents from the file `fname`
-func ReadContentFile(fname string) (ContentFrontMatter, error) {
-	// 
-	if !files.IsContentFile(fname) {
-		return nil, fmt.Errorf("target path %q is not a known content format", fname)
+
+// Read content file, return FrontMatter and Content
+func ReadContentFile(infn string) (pageparser.ContentFrontMatter, error) {
+	var pf pageparser.ContentFrontMatter
+	var err error
+	var contentBytes []byte
+
+	// Check if the specified file is content file
+	if !files.IsContentFile(infn) {
+		return pf, fmt.Errorf("Target path %q is not a known content format", infn)
 	}
 
 	// ReadFile 
-	contentBytes, err := os.ReadFile(fname)
+	contentBytes, err = os.ReadFile(infn)
 	if err != nil {
-		log.Fatalf("Read file error:", fname)
-		return nil, err
+		return pf, fmt.Errorf("Failed to read file %q: %w", infn, err)
 	}
 
 	// var pf ContentFrontMatter (defined in parser/pageparser/pageparser.go)
-	pf, err := pageparser.ParseFrontMatterAndContent(bytes.NewReader(contentBytes))
+	pf, err = pageparser.ParseFrontMatterAndContent(bytes.NewReader(contentBytes))
 	if err != nil {
-		log.Fatalf("Parse file error:", fname)
-		return nil, err
+		return pf, fmt.Errorf("Failed to parse file %q: %w", infn, err)
 	}
 
 	// better handling of dates in formats that don't have support for them
@@ -87,12 +86,88 @@ func ReadContentFile(fname string) (ContentFrontMatter, error) {
 			}
 		}
 	}
-
-	// convert []byte to string
-	// rest = *(*string)(unsafe.Pointer(&ret))
 	return pf, nil
+}
 
-	// Output:
-	// {Name:frontmatter Tags:[go yaml json toml]}
-	// rest of the content
+// return if the file is draft or not.
+func IsDraftFile(infn string) (bool, error) {
+	// ReadContentFile()
+	pf, err := ReadContentFile(infn)
+	if err != nil {
+		return false, err
+	}
+
+	// skip if the page is draft (i.e. "draft" of FrontMatter == true)
+	// copy the page with setting field "draft" of FrontMatter = true
+	var isDraft bool = false
+	for k, v := range pf.FrontMatter {
+		loki := strings.ToLower(k)
+		switch loki {
+		case "draft":
+			isDraft = cast.ToBool(v)
+		}
+	}
+	// if this page is draft, return true (the page is draft).
+	return isDraft, nil
+}
+
+// copy not-draft file from <infn> to <outfn>,
+// with setting which draft = true for translation. 
+func CopyContentFile(infn, outfn string) (bool, error) {
+	// ReadContentFile()
+	pf, err := ReadContentFile(infn)
+	if err != nil {
+		return false, err
+	}
+
+	// skip if the page is draft (i.e. "draft" of FrontMatter == true)
+	// copy the page with setting field "draft" of FrontMatter = true
+	var isDraft bool = false
+	var i int = 0
+	for k, v := range pf.FrontMatter {
+		i++
+		loki := strings.ToLower(k)
+		switch loki {
+		case "draft":
+			isDraft = cast.ToBool(v)
+			// set "draft" value of FrontMatter to true
+			pf.FrontMatter[k] = true
+		}
+	}
+	// if pf.FrontMatter dose not have "draft" field
+	if i == len(pf.FrontMatter) {
+		pf.FrontMatter["draft"] = true
+	}
+	// if this page is draft, return true (the page is draft).
+	if isDraft {
+		return false, nil
+	}
+	// if this page is not draft and not copy the page, return false (the page is not draft).
+	if outfn == "" {
+		return false, fmt.Errorf("Out file is not specified.")
+	}
+	// if file is already exist
+	if IsExist(outfn) {
+		return false, fmt.Errorf("File already exist: %s", outfn)
+	}
+
+	// Marsharl FrontMatter
+	var newContent bytes.Buffer
+	err = parser.InterfaceToFrontMatter(pf.FrontMatter, pf.FrontMatterFormat, &newContent)
+	if err != nil {
+		return false, err
+	}
+	newContent.Write(pf.Content)
+
+	// output FrontMatter and Content to outfn
+	outfile, err := os.Create(outfn)
+	if err != nil {
+		return false, fmt.Errorf("Failed to create file %q: %w", outfn, err)
+	}
+	// close the file
+	defer outfile.Close()
+	// write frontmatter and content to file
+	fmt.Fprint(outfile, &newContent)
+
+	return true, nil
 }
