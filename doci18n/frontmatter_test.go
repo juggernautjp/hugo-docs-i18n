@@ -11,7 +11,7 @@ import (
 	// "fmt"
 	// "io/fs"
 	"os"
-	// "log"
+	"log"
 	"strings"
 	// "time"
 	"encoding/json"
@@ -55,6 +55,90 @@ var static embed.FS
 
 //go:embed testdata/en/Sample.json
 var sampleBytes []byte
+
+// createEmptyFile() create a zero-size file
+func createEmptyFile(file string) {
+	if err := os.WriteFile(file, []byte(""), 0666); err != nil {
+		log.Fatal(err)
+	}
+}
+// createNotEmptyFile() create a zero-size file
+func createNotEmptyFile(file string) {
+	if err := os.WriteFile(file, []byte("content"), 0666); err != nil {
+		log.Fatal(err)
+	}
+}
+
+// Test for IsExist()
+func TestIsExist(t *testing.T) {
+	dir := t.TempDir()
+	testCases := map[string]bool {
+		"file_a.md": true,
+		"file_b.md": false,
+	}
+	t.Run("IsExist()", func(t *testing.T) {
+		for fn, want := range testCases {
+			infname := filepath.Join(dir, fn)
+			if want {
+				createEmptyFile(infname)
+			}
+			got := IsExist(infname)
+			if got != want {
+				t.Errorf("File is exist?: %s\n\ngot : %v\nwant: %v\n", infname, got, want)
+			}
+		}
+	})
+}
+
+// Test for IsEmpty()
+func TestIsEmpty(t *testing.T) {
+	dir := t.TempDir()
+	testCases := map[string]bool {
+		"file_a.md": true,
+		"file_b.md": false,
+		"file_c.md": false,
+	}
+	t.Run("IsEmpty()", func(t *testing.T) {
+		for fn, want := range testCases {
+			infname := filepath.Join(dir, fn)
+			if want {
+				createEmptyFile(infname)
+			}
+			if fn == "file_c.md" {
+				createNotEmptyFile(infname)
+			}
+			got := IsEmpty(infname)
+			if got != want {
+				t.Errorf("File is empty?: %s\n\ngot : %v\nwant: %v\n", infname, got, want)
+			}
+		}
+	})
+}
+
+// Test for IsDir()
+func TestIsDir(t *testing.T) {
+	dir := t.TempDir()
+	testCases := map[string]bool {
+		"dir_a": true,
+		"dir_b": false,
+		"file_b.md": false,
+	}
+	t.Run("IsDir()", func(t *testing.T) {
+		for fn, want := range testCases {
+			infname := filepath.Join(dir, fn)
+			if want {
+				os.MkdirAll(infname, 0755)
+			}
+			if filepath.Ext(fn) != "" {
+				createNotEmptyFile(infname)
+			}
+			got := IsDir(infname)
+			if got != want {
+				t.Errorf("Is directory?: %s\n\ngot : %v\nwant: %v\n", infname, got, want)
+			}
+		}
+	})
+}
 
 // Test for ReadContentFile()
 func TestReadContentFile(t *testing.T) {
@@ -120,8 +204,8 @@ func TestReadContentFile(t *testing.T) {
 		}
 	}
 
-	// Case 3: 
-	t.Run("Case 3: read FrontMatter", func(t *testing.T) {
+	// Case 1: 
+	t.Run("Case 1: TestReadContentFile()", func(t *testing.T) {
 		for _, fn := range testCases {
 			infname := filepath.Join(dir, fn)
 			// Test Run
@@ -142,22 +226,37 @@ func TestReadContentFile(t *testing.T) {
 func TestIsDraftFile(t *testing.T) {
 	// Test data #3: File name to read for draft test
 	const dir = "testdata"
-	testCases := map[string]bool {
-		"YAML_Draft.md": true,
-		"YAML_NotDraft.md": false,
+	testCases := []struct {
+		path string
+		title string
+		draft bool
+	}{
+		{
+			path: "YAML_Draft.md",
+			title: "YAML Draft Markdown",
+			draft: true,
+		},
+		{
+			path: "YAML_NotDraft.md",
+			title: "YAML NotDraft Markdown",
+			draft: false,
+		},
 	}
 
 	// Case 1: 
-	t.Run("Case 1: is draft?", func(t *testing.T) {
-		for fn, want := range testCases {
-			infname := filepath.Join(dir, fn)
+	t.Run("Case 2: TestIsDraftFile()", func(t *testing.T) {
+		for _, want := range testCases {
+			infname := filepath.Join(dir, want.path)
 			// Test Run
-			got, err := IsDraftFile(infname)
+			gotDraft, gotTitle, err := IsDraftFile(infname)
 			if err != nil {
 				t.Fatalf("Failed to read file %s: %v", infname, err)
 			}
-			if got != want {
-				t.Errorf("File is draft?: %s\n\ngot : %v\nwant: %v\n", infname, got, want)
+			if gotDraft != want.draft {
+				t.Errorf("File is draft?: %s\n\ngot : %v\nwant: %v\n", infname, gotDraft, want.draft)
+			}
+			if gotTitle != want.title {
+				t.Errorf("Title: %s\n\ngot : %v\nwant: %v\n", infname, gotTitle, want.title)
 			}
 		}
 	})
@@ -179,8 +278,8 @@ func TestCopyContentFile(t *testing.T) {
 	}
 	*/
 
-	// Case 2: 
-	t.Run("Case 2: convert FrontMatter", func(t *testing.T) {
+	// Case 3: 
+	t.Run("Case 3: TestCopyContentFile()", func(t *testing.T) {
 		for fn, want := range testCases {
 			infname := filepath.Join(dir, fn)
 			outfname := filepath.Join(outdir, fn)
@@ -202,7 +301,7 @@ func TestCopyContentFile(t *testing.T) {
 				if !IsExist(outfname) {
 					t.Errorf("Output file should be copied: %s\n", outfname)
 				} else {
-					got, err := IsDraftFile(outfname)
+					got, _, err := IsDraftFile(outfname)
 					if err != nil {
 						t.Fatalf("Failed to read copied file %s: %v", outfname, err)
 					}
@@ -215,6 +314,35 @@ func TestCopyContentFile(t *testing.T) {
 				if IsExist(outfname) {
 					t.Errorf("Output file should not be copied: %s\n", outfname)
 				}
+			}
+		}
+	})
+}
+
+// Test for CopyNotContentFile()
+func TestCopyNotContentFile(t *testing.T) {
+	// Test data #3: File name to read for draft test 
+	const dir = "testdata/zn"
+	testCases := map[string]bool {
+		"images/hugo-with-nanobox.png": true,
+		"css/style.css": true,
+		"dir_a/draft_a.md": false,
+		"dir_a/nofile.md": false,
+	}
+	outdir := t.TempDir()
+	// Case 3: 
+	t.Run("Case 4: TestCopyNotContentFile()", func(t *testing.T) {
+		for p, want := range testCases {
+			_, fn := filepath.Split(p)
+			infname := filepath.Join(dir, p)
+			outfname := filepath.Join(outdir, fn)
+			if IsExist(outfname) {
+				os.Remove(outfname)
+			}
+			// Test Run
+			got := CopyNotContentFile(infname, outfname)
+			if got != want {
+				t.Errorf("Faild to copy %s to %s\n", infname, outfname)
 			}
 		}
 	})

@@ -1,0 +1,42 @@
+{
+  "count": {
+    "draft": 3,
+    "notdraft": 3,
+    "total": 6,
+    "ratio": 0.5
+  },
+  "path": {
+    "files": [
+      {
+        "path": "testdata\\zn\\dir_a\\draft_a.md",
+        "title": "title draft_a",
+        "draft": true
+      },
+      {
+        "path": "testdata\\zn\\dir_a\\notdraft_a.md",
+        "title": "title notdraft_a",
+        "draft": false
+      },
+      {
+        "path": "testdata\\zn\\dir_b\\draft_b.md",
+        "title": "title draft_b",
+        "draft": true
+      },
+      {
+        "path": "testdata\\zn\\dir_b\\notdraft_b.md",
+        "title": "title notdraft_b",
+        "draft": false
+      },
+      {
+        "path": "testdata\\zn\\draft_c.md",
+        "title": "title draft_c",
+        "draft": true
+      },
+      {
+        "path": "testdata\\zn\\notdraft_c.md",
+        "title": "title notdraft_c",
+        "draft": false
+      }
+    ]
+  }
+}

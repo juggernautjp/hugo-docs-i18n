@@ -23,22 +23,36 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"hugo-docs-i18n/doci18n"
 )
 
 // updateCmd represents the update command
 var updateCmd = &cobra.Command{
 	Use:   "update",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Copy and update content files from English to target language",
+	Long: `Copy and update content files written in English to content/<code> directory.
+Before execute this command, you should run \"hugo-docs-i18n init\".`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("update called")
+		srcdir := viper.GetString("source-dir")
+		if srcdir == "" {
+			log.Fatalln("You should execute \"hugo-docs-i18n init\"\n")
+		}
+		dstdir := viper.GetString("target-dir")
+		if dstdir == "" {
+			log.Fatalln("You should specify the target language directory with --target-dir flag.\n")
+		}
+		if !doci18n.IsExist(dstdir) {
+			log.Fatalf(`Directory dose not exist: %s`, dstdir)
+		}
+		// Copy content directory from source language (English) to target language
+		if _, err := doci18n.CopyContentDir(srcdir, dstdir); err != nil {
+			log.Fatalf("Error when copying: %s -> %s: %s\n", srcdir, dstdir, err)
+		}
 	},
 }
 
@@ -54,4 +68,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// updateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	updateCmd.Flags().StringP("target-dir", "d", "", "Content directory for target language")
+	updateCmd.Flags().Lookup("target-dir").NoOptDefVal = ""
+	viper.BindPFlag("target-dir", updateCmd.Flags().Lookup("target-dir"))
 }

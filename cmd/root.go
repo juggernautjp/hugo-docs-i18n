@@ -29,14 +29,15 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Const & Variables
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "hugo-docs-i18n",
-	Short: "Hugo ドキュメントの翻訳環境の構築および管理のツール",
-	Long:  `hugo-docs-i18n is a tool to initialize and manage the environment
-	to translate Hugo Documentation.`,
+	Short: "Hugo ドキュメントの翻訳環境を構築および管理するツールセット",
+	Long:  `hugo-docs-i18n is a set of tools to initialize and manage the environment
+	to translate Hugo Documentation in you language.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -76,7 +77,7 @@ func initConfig() {
 		// Search config in current directory with name "hugo-docs-i18n.yaml".
 		viper.AddConfigPath(pwd)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName("hugo-docs-i18n.yaml")
+		viper.SetConfigName("hugo-docs-i18n")
 	}
 	viper.AutomaticEnv() // read in environment variables that match
 

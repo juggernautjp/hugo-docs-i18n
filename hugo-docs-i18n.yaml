@@ -1,0 +1,11 @@
+code: ""
+content-dir: content
+data-dir: data/i18n
+iso-json: ISO_639-1.json
+iso-md: ISO_639-1.md
+json: ""
+lang: ""
+md: ""
+source-dir: content/en
+target-code: ""
+target-dir: ""

@@ -27,7 +27,7 @@ func ConvertLocaleFile(infn, outfn string) error {
 	// open the file
 	infile, err := os.Open(infn)
 	if err != nil {
-		return fmt.Errorf("Error when opening file: %s", err)
+		return fmt.Errorf("Error when opening file: %w", err)
 		// log.Fatalf("Error when opening file: %s", err)
 	}
 	// close the file
@@ -36,7 +36,7 @@ func ConvertLocaleFile(infn, outfn string) error {
 	// open the file
 	outfile, err := os.Create(outfn)
 	if err != nil {
-		return fmt.Errorf("Error when opening file: %s", err)
+		return fmt.Errorf("Error when opening file: %w", err)
 		// log.Fatalf("Error when opening file: %s", err)
 	}
 	// close the file
@@ -62,7 +62,7 @@ func ConvertLocaleFile(infn, outfn string) error {
 		fmt.Fprint(outfile, string(result))
 	}
 	if err := s.Err(); err != nil {
-		return fmt.Errorf("Error while reading file: %s", err)
+		return fmt.Errorf("Error while reading file: %w", err)
 		// log.Fatalf("Error while reading file: %s", err)
 	}
 	// write footer to file

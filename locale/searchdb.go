@@ -55,3 +55,10 @@ func SearchLocaleFile(infn, lg, cd string) ([]LangPair, error) {
 	}
 	return pairs, nil
 }
+
+// Print searched result
+func PrintSearchedResult(pairs []LangPair)  {
+	for _, lp := range pairs {
+		fmt.Printf("Language: %30s \tCode: %5s\n", lp.Lang, lp.Code)
+	}
+}

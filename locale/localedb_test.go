@@ -11,13 +11,13 @@ import (
 	// "fmt"
 	// "io/fs"
 	"os"
-	// "log"
+	"log"
 	"encoding/json"
 	"path/filepath"
 	// "reflect"
 	"testing"
 
-	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
+	"hugo-docs-i18n/doci18n"
 )
 
 // go:embed testdata/ISO_639-1.json
@@ -41,12 +41,12 @@ func TestConvertLocaleFile(t *testing.T) {
 	var sampleBytes []byte
 	sampleBytes, err := os.ReadFile(infname)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	// Test data #1: Locale (lang/code pair) data from JSON
 	var wantJson langJSON
 	if err := json.Unmarshal(sampleBytes, &wantJson); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	// fmt.Printf("%+v\n", wantJson)
 
@@ -61,17 +61,17 @@ func TestConvertLocaleFile(t *testing.T) {
 
 	// Test data #2: Locale (lang/code pair) data from Markdown file
 	if err := ConvertLocaleFile(inmdfname, outfname); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	
 	// Test data #3: Locale (lang/code pair) data from JSON output by #2
 	contentBytes, err := os.ReadFile(outfname)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	var gotJson langJSON
 	if err := json.Unmarshal(contentBytes, &gotJson); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	// Verify wantJson == gotJson

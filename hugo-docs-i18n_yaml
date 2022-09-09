@@ -1,0 +1,3 @@
+# hugo-docs-i18n.yaml
+data-root: data/i18n
+content-root: content

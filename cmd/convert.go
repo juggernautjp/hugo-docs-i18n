@@ -30,15 +30,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"hugo-docs-i18n/locale"
+	"hugo-docs-i18n/doci18n"
 )
-
-// Const & Variables
-const dir = "data"
-const infn = "ISO_639-1.md"
-const outfn = "ISO_639-1.json"
-var inFilename string
-var outFilename string
-var cfgF string
 
 // localedbCmd represents the localedb command
 var convertCmd = &cobra.Command{
@@ -48,18 +41,44 @@ var convertCmd = &cobra.Command{
 This command create locale database from the Markdown file of the follows:
 
 ISO 639-1 standard language codes:
-https://www.andiamo.co.uk/resources/iso-language-codes/
+  https://www.andiamo.co.uk/resources/iso-language-codes/
 
 The above file is saved as data/ISO_639-1.md,
 and will be converted to JSON file as data/ISO_639-1.json.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("convert called.")
-		if err := locale.ConvertLocaleFile(inFilename, outFilename); err != nil {
-			log.Fatalf("Error when converting file: %s\n  %s -> %s", err, inFilename, outFilename)
+		datadir := viper.GetString("data-dir")
+		infn := viper.GetString("md")
+		if infn == "" {
+			infn = viper.GetString("iso-md")
 		}
+		outfn := viper.GetString("json")
+		if outfn == "" {
+			outfn = viper.GetString("iso-json")
+		}
+		var infname, outfname string
+		if !doci18n.IsExist(infn) {
+			infname = filepath.Join(datadir, infn)
+			outfname = filepath.Join(datadir, outfn)
+			if !doci18n.IsExist(infname) {
+				infname = ""
+			}
+		} else {
+			infname = infn
+			outfname = outfn
+		}
+		if infname == "" {
+			log.Fatalf(`Locale JSON file dose not exist: %s`, infn)
+		}
+		// convert Markdown to JSON
+		fmt.Printf("converting %s to %s ...\n", infname, outfname)
+		if err := locale.ConvertLocaleFile(infname, outfname); err != nil {
+			log.Fatalf("Error when converting: %w\n", err)
+		}
+		/* Save config file
 		if err := viper.WriteConfig(); err != nil {
-			log.Fatalf("Error when writing config file: %s\n", err)
+			log.Fatalf("Error when writing config file: %w\n", err)
 		}
+		*/
 	},
 }
 
@@ -67,15 +86,15 @@ func init() {
 	rootCmd.AddCommand(convertCmd)
 
 	// Here you will define your flags and configuration settings.
-	infname := filepath.Join(dir, infn)
-	outfname := filepath.Join(dir, outfn)
 
 	// Cobra supports Persistent Flags which will work for this command and all subcommands,
 	// localedbCmd.PersistentFlags().String("foo", "", "A help for foo")
-	convertCmd.PersistentFlags().StringVar(&outFilename, "locale-db", outfname, "locale database file that created")
-	viper.BindPFlag("locale-db", convertCmd.PersistentFlags().Lookup("locale-db"))
 
 	// Cobra supports local flags which will only run when this command is called.
-	convertCmd.Flags().StringVar(&inFilename, "src-md", infname, "source Markdown file of locale database")
-	viper.BindPFlag("src-md", convertCmd.Flags().Lookup("src-md"))
+	convertCmd.Flags().StringP("md", "m", "", "source Markdown file of locale database")
+	convertCmd.Flags().StringP("json", "j", "", "locale database file that created")
+	convertCmd.Flags().Lookup("md").NoOptDefVal = ""
+	convertCmd.Flags().Lookup("json").NoOptDefVal = ""
+	viper.BindPFlag("md", convertCmd.Flags().Lookup("md"))
+	viper.BindPFlag("json", convertCmd.Flags().Lookup("json"))
 }

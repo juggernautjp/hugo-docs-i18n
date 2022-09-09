@@ -22,37 +22,28 @@ THE SOFTWARE.
 package cmd
 
 import (
+	// "os"
 	"fmt"
 	"log"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"hugo-docs-i18n/doci18n"
 )
 
-// Variables
-var dstLocale string
-var contentDir string
-var languageName string
-var weight int
-var time_format_default string
-var time_format_blog string
+// Const
+const config_name = "hugo-docs-i18n.yaml"
+
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Hugo ドキュメント翻訳環境の初期化",
-	Long: `Initialize the configuration file for localization of Hugo Documentation.
-For example of Japanese localization:
-
-$ hugo-docs-i18n init --locale ja`,
+	Short: "Hugo ドキュメント翻訳環境の設定ファイルの初期化",
+	Long: `Generate a configuration file for localization of Hugo Documentation.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called: ", dstLocale)
-		if dstLocale == "" {
-			log.Fatalln(`--locale flag should be specified.
-	"search" command can search locale code for the translation language. `)
-		}
-		if err := viper.WriteConfig(); err != nil {
-			log.Fatalf("Error when writing config file: %s\n", err)
+		fmt.Printf("Generating config file: %s ...", config_name)
+		// Generate initial config file
+		if err := doci18n.SaveConfigFile(config_name); err != nil {
+			log.Fatalf(`Can not generate config file: %w`, err)
 		}
 	},
 }
@@ -64,20 +55,10 @@ func init() {
 
 	// Persistent Flags which will work for this command and all subcommands.
 	// initCmd.PersistentFlags().String("foo", "", "A help for foo")
-	initCmd.PersistentFlags().StringVar(&dstLocale, "locale", "", "locale code for target language")
-	initCmd.MarkFlagRequired("locale")
-	viper.BindPFlag("locale", initCmd.PersistentFlags().Lookup("locale"))
+	// initCmd.PersistentFlags().String("locale", "", "locale code for target language")
+	// initCmd.MarkFlagRequired("locale")
+	// viper.BindPFlag("locale", initCmd.PersistentFlags().Lookup("locale"))
 
 	// local flags which will only run when this command is called directly.
 	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	initCmd.Flags().StringVar(&contentDir, "content-dir", "content", "content directory for target language")
-	initCmd.Flags().StringVar(&languageName, "lang-name", "", "name of target language")
-	initCmd.Flags().IntVar(&weight, "weight", 2, "weight")
-	initCmd.Flags().StringVar(&time_format_default, "time-format-default", "2006/02/01", "default time format")
-	initCmd.Flags().StringVar(&time_format_blog, "time-format-blog", "2006/02/01", "blog's time format")
-	viper.BindPFlag("content-dir", initCmd.Flags().Lookup("content-dir"))
-	viper.BindPFlag("lang-name", initCmd.Flags().Lookup("lang-name"))
-	viper.BindPFlag("weight", initCmd.Flags().Lookup("weight"))
-	viper.BindPFlag("time-format-default", initCmd.Flags().Lookup("time-format-default"))
-	viper.BindPFlag("time-format-blog", initCmd.Flags().Lookup("time-format-blog"))
 }

@@ -10,6 +10,7 @@ Get data from Front Matter of Hugo Markdown file with:
 package doci18n
 
 import (
+	"io"
 	"os"
 	"bytes"
 	"fmt"
@@ -41,24 +42,30 @@ func IsEmpty(filename string) bool {
 	return err == nil && fi.Size() == 0
 }
 
-// File is not empty?
-func IsNotEmpty(filename string) bool {
-	fi, err := os.Stat(filename)
-	return err == nil && fi.Size() > 0
-}
-
 // Is directory?
 func IsDir(filename string) bool {
 	fi, err := os.Stat(filename)
 	return err == nil && fi.IsDir()
 }
 
+// Is regular file?
+func IsRegularFile(filename string) bool {
+	if filename == "" || !IsExist(filename) || IsEmpty(filename) || IsDir(filename) {
+		return false
+	}
+	return true
+}
 
 // Read content file, return FrontMatter and Content
 func ReadContentFile(infn string) (pageparser.ContentFrontMatter, error) {
 	var pf pageparser.ContentFrontMatter
 	var err error
 	var contentBytes []byte
+
+	// Check if the file is file and not zero-size
+	if !IsRegularFile(infn) {
+		return pf, fmt.Errorf("Target path %q is not a file", infn)
+	}
 
 	// Check if the specified file is content file
 	if !files.IsContentFile(infn) {
@@ -90,25 +97,28 @@ func ReadContentFile(infn string) (pageparser.ContentFrontMatter, error) {
 }
 
 // return if the file is draft or not.
-func IsDraftFile(infn string) (bool, error) {
+func IsDraftFile(infn string) (bool, string, error) {
 	// ReadContentFile()
 	pf, err := ReadContentFile(infn)
 	if err != nil {
-		return false, err
+		return false, "", err
 	}
 
 	// skip if the page is draft (i.e. "draft" of FrontMatter == true)
 	// copy the page with setting field "draft" of FrontMatter = true
 	var isDraft bool = false
+	var sTitle string = ""
 	for k, v := range pf.FrontMatter {
 		loki := strings.ToLower(k)
 		switch loki {
 		case "draft":
 			isDraft = cast.ToBool(v)
+		case "title":
+			sTitle = cast.ToString(v)
 		}
 	}
 	// if this page is draft, return true (the page is draft).
-	return isDraft, nil
+	return isDraft, sTitle, nil
 }
 
 // copy not-draft file from <infn> to <outfn>,
@@ -170,4 +180,41 @@ func CopyContentFile(infn, outfn string) (bool, error) {
 	fmt.Fprint(outfile, &newContent)
 
 	return true, nil
+}
+
+// Copy not-content file, including CSS, jpeg, etc. 
+func CopyNotContentFile(infn, outfn string) bool {
+	// Check if the file is file and not zero-size
+	if !IsRegularFile(infn) {
+		return false
+	}
+
+	// Check if the specified file is content file
+	if files.IsContentFile(infn) {
+		return false
+	}
+
+	// if file is already exist
+	if IsExist(outfn) {
+		return false
+	}
+
+	// copy file
+	src, err := os.Open(infn)
+	if err != nil {
+		return false
+	}
+	defer src.Close()
+
+	dst, err := os.Create(outfn)
+	if err != nil {
+		return false
+	}
+	defer dst.Close()
+
+	_, err = io.Copy(dst, src)
+	if  err != nil {
+		return false
+	}
+	return true
 }

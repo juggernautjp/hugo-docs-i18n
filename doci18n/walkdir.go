@@ -65,7 +65,7 @@ func WalkDir2(dir string, walkDirFunc func(path string, d fs.DirEntry) error) ([
 			// Now that we've reached a leaf (file) in the directory tree
 
 			// call walkDirFunc() for directory `path`
-			if err := walkDirFunc(dir, file); err != nil {
+			if err := walkDirFunc(path, file); err != nil {
 				return nil, fmt.Errorf("walkDirFunc %s: %w", path, err)
 			}
 			// we'll add it to "paths" variable.
