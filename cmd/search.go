@@ -27,7 +27,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	// "github.com/spf13/viper"
 	"hugo-docs-i18n/locale"
 	"hugo-docs-i18n/doci18n"
 )
@@ -42,11 +42,15 @@ or the following web page:
 ISO 639-1 standard language codes:
   https://www.andiamo.co.uk/resources/iso-language-codes/`,
 	Run: func(cmd *cobra.Command, args []string) {
-		tl := viper.GetString("lang")
-		tc := viper.GetString("code")
+		// tl := viper.GetString("lang")
+		// tc := viper.GetString("code")
+		tl, _ := cmd.Flags().GetString("lang")
+		tc, _ := cmd.Flags().GetString("code")
 		fmt.Printf("searching lang=%s, code=%s ...\n", tl, tc)
-		ldb := viper.GetString("iso-json")
-		datadir := viper.GetString("data-dir")
+		// ldb := viper.GetString("iso-json")
+		// datadir := viper.GetString("data-dir")
+		ldb, _ := cmd.Flags().GetString("iso-json")
+		datadir, _ := cmd.Flags().GetString("data-dir")
 		var fn string
 		if !doci18n.IsExist(ldb) {
 			fn = filepath.Join(datadir, ldb)
@@ -82,6 +86,6 @@ func init() {
 	searchCmd.Flags().StringP("code", "c", "", "locale code of ISO 639-1")
 	searchCmd.Flags().Lookup("lang").NoOptDefVal = ""
 	searchCmd.Flags().Lookup("code").NoOptDefVal = ""
-	viper.BindPFlag("lang", searchCmd.Flags().Lookup("lang"))
-	viper.BindPFlag("code", searchCmd.Flags().Lookup("code"))
+	// viper.BindPFlag("lang", searchCmd.Flags().Lookup("lang"))
+	// viper.BindPFlag("code", searchCmd.Flags().Lookup("code"))
 }

@@ -28,7 +28,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	// "github.com/spf13/viper"
 	"hugo-docs-i18n/doci18n"
 )
 
@@ -41,15 +41,18 @@ and what percentage of the files have been translated.
 
 The data is stored "data/i18n/<code>.json, and show the page.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		tdir := viper.GetString("target-dir")
-		tcode := viper.GetString("target-code")
+		// tdir := viper.GetString("target-dir")
+		// tcode := viper.GetString("target-code")
+		tdir, _ := cmd.Flags().GetString("target-dir")
+		tcode, _ := cmd.Flags().GetString("target-code")
 		if tdir == "" && tcode == "" {
 			log.Fatalln(`Both flags are not specified`)
 		}
 		if tcode == "" {
 			tcode = filepath.Base(tdir)
 		} else if tdir == "" {
-			cdir := viper.GetString("content-dir")
+			// cdir := viper.GetString("content-dir")
+			cdir, _ := cmd.Flags().GetString("content-dir")
 			tdir = filepath.Join(cdir, tcode)
 		}
 		fmt.Printf("count the number of draft files under the directory: %s\n", tdir)
@@ -70,7 +73,8 @@ The data is stored "data/i18n/<code>.json, and show the page.`,
 			log.Fatalf(`Can not count draft files: %w`, err)
 		}
 		// Get data filename to save JSON data
-		ddir := viper.GetString("data-dir")
+		// ddir := viper.GetString("data-dir")
+		ddir, _ := cmd.Flags().GetString("data-dir")
 		jsonfn := filepath.Join(ddir, tcode + ".json")
 		if err := doci18n.SaveCountJSONFile(jsonfn, gotPJ, gotCD); err != nil {
 			log.Fatalf("Can not save data: %w", err)
@@ -94,6 +98,6 @@ func init() {
 	collectCmd.Flags().StringP("target-code", "c", "", "Locale code for target language")
 	collectCmd.Flags().Lookup("target-dir").NoOptDefVal = ""
 	collectCmd.Flags().Lookup("target-code").NoOptDefVal = ""
-	viper.BindPFlag("target-dir", collectCmd.Flags().Lookup("target-dir"))
-	viper.BindPFlag("target-code", collectCmd.Flags().Lookup("target-code"))
+	// viper.BindPFlag("target-dir", collectCmd.Flags().Lookup("target-dir"))
+	// viper.BindPFlag("target-code", collectCmd.Flags().Lookup("target-code"))
 }

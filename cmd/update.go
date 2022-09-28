@@ -26,7 +26,7 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	// "github.com/spf13/viper"
 	"hugo-docs-i18n/doci18n"
 )
 
@@ -38,11 +38,13 @@ var updateCmd = &cobra.Command{
 Before execute this command, you should run \"hugo-docs-i18n init\".`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("update called")
-		srcdir := viper.GetString("source-dir")
+		// srcdir := viper.GetString("source-dir")
+		srcdir, _ := cmd.Flags().GetString("source-dir")
 		if srcdir == "" {
 			log.Fatalln("You should execute \"hugo-docs-i18n init\"\n")
 		}
-		dstdir := viper.GetString("target-dir")
+		// dstdir := viper.GetString("target-dir")
+		dstdir, _ := cmd.Flags().GetString("target-dir")
 		if dstdir == "" {
 			log.Fatalln("You should specify the target language directory with --target-dir flag.\n")
 		}
@@ -70,5 +72,5 @@ func init() {
 	// updateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	updateCmd.Flags().StringP("target-dir", "d", "", "Content directory for target language")
 	updateCmd.Flags().Lookup("target-dir").NoOptDefVal = ""
-	viper.BindPFlag("target-dir", updateCmd.Flags().Lookup("target-dir"))
+	// viper.BindPFlag("target-dir", updateCmd.Flags().Lookup("target-dir"))
 }
