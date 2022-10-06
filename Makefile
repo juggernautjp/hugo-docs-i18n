@@ -6,6 +6,8 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GOMODTIDY=$(GOCMD) mod tidy
 BINARY_NAME=hugo-docs-i18n.exe
+CONFIG_NAME=hugo-docs-i18n.yaml
+TEST_DIR=content/ja
 BINARY_UNIX=$(BINARY_NAME)_unix
 VER="v0.1.5"
 VERM="dev version 0.1.5"
@@ -23,6 +25,8 @@ clean:
 		$(GOCLEAN)
 		rm -f $(BINARY_NAME)
 		rm -f $(BINARY_UNIX)
+		rm -f $(CONFIG_NAME)
+		rm -rf $(TEST_DIR)
 run: 
 		$(GOBUILD) -o $(BINARY_NAME) -v ./...
 		./$(BINARY_NAME)

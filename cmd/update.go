@@ -48,9 +48,11 @@ Before execute this command, you should run "hugo-docs-i18n init".`,
 		if dstdir == "" {
 			log.Fatalln("You should specify the target language directory with --target-dir flag.")
 		}
+		/*
 		if !doci18n.IsExist(dstdir) {
 			log.Fatalf(`Directory dose not exist: %s`, dstdir)
 		}
+		*/
 		// Copy content directory from source language (English) to target language
 		if _, err := doci18n.CopyContentDir(srcdir, dstdir); err != nil {
 			log.Fatalf("Error when copying: %s -> %s: %s\n", srcdir, dstdir, err)
