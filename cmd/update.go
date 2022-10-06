@@ -26,7 +26,7 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-	// "github.com/spf13/viper"
+	"github.com/spf13/viper"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
 
@@ -38,8 +38,8 @@ var updateCmd = &cobra.Command{
 Before execute this command, you should run "hugo-docs-i18n init".`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("update called")
-		// srcdir := viper.GetString("source-dir")
-		srcdir, _ := cmd.Flags().GetString("source-dir")
+		srcdir := viper.GetString("source-dir")
+		// srcdir, _ := cmd.Flags().GetString("source-dir")
 		if srcdir == "" {
 			log.Fatalln("You should execute \"hugo-docs-i18n init\"")
 		}
