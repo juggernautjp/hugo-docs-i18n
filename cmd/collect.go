@@ -29,7 +29,7 @@ import (
 
 	"github.com/spf13/cobra"
 	// "github.com/spf13/viper"
-	"hugo-docs-i18n/doci18n"
+	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
 
 // collectCmd represents the collect command

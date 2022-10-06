@@ -27,7 +27,7 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-	"hugo-docs-i18n/doci18n"
+	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
 
 // Const

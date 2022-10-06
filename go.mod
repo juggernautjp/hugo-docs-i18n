@@ -1,4 +1,4 @@
-module hugo-docs-i18n
+module github.com/juggernautjp/hugo-docs-i18n
 
 go 1.18
 

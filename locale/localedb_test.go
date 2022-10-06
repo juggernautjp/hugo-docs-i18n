@@ -17,7 +17,7 @@ import (
 	// "reflect"
 	"testing"
 
-	"hugo-docs-i18n/doci18n"
+	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
 
 // go:embed testdata/ISO_639-1.json

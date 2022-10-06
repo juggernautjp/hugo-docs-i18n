@@ -28,8 +28,8 @@ import (
 
 	"github.com/spf13/cobra"
 	// "github.com/spf13/viper"
-	"hugo-docs-i18n/locale"
-	"hugo-docs-i18n/doci18n"
+	"github.com/juggernautjp/hugo-docs-i18n/locale"
+	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
 
 // searchCmd represents the search command
