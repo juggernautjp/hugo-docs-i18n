@@ -9,8 +9,8 @@ BINARY_NAME=hugo-docs-i18n.exe
 CONFIG_NAME=hugo-docs-i18n.yaml
 TEST_DIR=content/ja
 BINARY_UNIX=$(BINARY_NAME)_unix
-VER="v0.1.5"
-VERM="dev version 0.1.5"
+VER="v0.1.6"
+VERM="dev version 0.1.6"
 
 all: test build
 build:
