@@ -22,13 +22,13 @@ THE SOFTWARE.
 package cmd
 
 import (
-	// "os"
+	"os"
 	"fmt"
 	"log"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	// "github.com/spf13/viper"
+	"github.com/spf13/viper"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
 
@@ -51,8 +51,8 @@ The data is stored "data/i18n/<code>.json, and show the page.`,
 		if tcode == "" {
 			tcode = filepath.Base(tdir)
 		} else if tdir == "" {
-			// cdir := viper.GetString("content-dir")
-			cdir, _ := cmd.Flags().GetString("content-dir")
+			cdir := viper.GetString("content-dir")
+			// cdir, _ := cmd.Flags().GetString("content-dir")
 			tdir = filepath.Join(cdir, tcode)
 		}
 		fmt.Printf("count the number of draft files under the directory: %s\n", tdir)
@@ -73,8 +73,12 @@ The data is stored "data/i18n/<code>.json, and show the page.`,
 			log.Fatalf(`Can not count draft files: %s`, err)
 		}
 		// Get data filename to save JSON data
-		// ddir := viper.GetString("data-dir")
-		ddir, _ := cmd.Flags().GetString("data-dir")
+		ddir := viper.GetString("data-dir")
+		// ddir, _ := cmd.Flags().GetString("data-dir")
+		if !doci18n.IsExist(ddir) {
+			os.MkdirAll(ddir, 0755)
+		}
+		// save json file
 		jsonfn := filepath.Join(ddir, tcode + ".json")
 		if err := doci18n.SaveCountJSONFile(jsonfn, gotPJ, gotCD); err != nil {
 			log.Fatalf("Can not save data: %s", err)
