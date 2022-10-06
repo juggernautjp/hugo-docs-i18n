@@ -43,7 +43,7 @@ var initCmd = &cobra.Command{
 		fmt.Printf("Generating config file: %s ...", config_name)
 		// Generate initial config file
 		if err := doci18n.SaveConfigFile(config_name); err != nil {
-			log.Fatalf(`Can not generate config file: %w`, err)
+			log.Fatalf(`Can not generate config file: %s`, err)
 		}
 	},
 }

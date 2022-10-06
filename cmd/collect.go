@@ -70,14 +70,14 @@ The data is stored "data/i18n/<code>.json, and show the page.`,
 		// Count draft files under the directory
 		gotPJ, gotCD, err := doci18n.CountDraftFile(tdir)
 		if err != nil {
-			log.Fatalf(`Can not count draft files: %w`, err)
+			log.Fatalf(`Can not count draft files: %s`, err)
 		}
 		// Get data filename to save JSON data
 		// ddir := viper.GetString("data-dir")
 		ddir, _ := cmd.Flags().GetString("data-dir")
 		jsonfn := filepath.Join(ddir, tcode + ".json")
 		if err := doci18n.SaveCountJSONFile(jsonfn, gotPJ, gotCD); err != nil {
-			log.Fatalf("Can not save data: %w", err)
+			log.Fatalf("Can not save data: %s", err)
 		}
 	},
 }

@@ -65,7 +65,7 @@ ISO 639-1 standard language codes:
 		}
 		pairs, err := locale.SearchLocaleFile(fn, tl, tc)
 		if err != nil {
-			log.Fatalf("Error when searching locale: %w\n", err)
+			log.Fatalf("Error when searching locale: %s\n", err)
 		}
 		locale.PrintSearchedResult(pairs)
 	},

@@ -41,12 +41,12 @@ Before execute this command, you should run \"hugo-docs-i18n init\".`,
 		// srcdir := viper.GetString("source-dir")
 		srcdir, _ := cmd.Flags().GetString("source-dir")
 		if srcdir == "" {
-			log.Fatalln("You should execute \"hugo-docs-i18n init\"\n")
+			log.Fatalln("You should execute \"hugo-docs-i18n init\"")
 		}
 		// dstdir := viper.GetString("target-dir")
 		dstdir, _ := cmd.Flags().GetString("target-dir")
 		if dstdir == "" {
-			log.Fatalln("You should specify the target language directory with --target-dir flag.\n")
+			log.Fatalln("You should specify the target language directory with --target-dir flag.")
 		}
 		if !doci18n.IsExist(dstdir) {
 			log.Fatalf(`Directory dose not exist: %s`, dstdir)

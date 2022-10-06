@@ -77,7 +77,7 @@ and will be converted to JSON file as data/ISO_639-1.json.`,
 		// convert Markdown to JSON
 		fmt.Printf("converting %s to %s ...\n", infname, outfname)
 		if err := locale.ConvertLocaleFile(infname, outfname); err != nil {
-			log.Fatalf("Error when converting: %w\n", err)
+			log.Fatalf("Error when converting: %s\n", err)
 		}
 		/* Save config file
 		if err := viper.WriteConfig(); err != nil {

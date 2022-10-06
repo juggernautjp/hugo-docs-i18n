@@ -7,12 +7,18 @@ GOGET=$(GOCMD) get
 GOMODTIDY=$(GOCMD) mod tidy
 BINARY_NAME=hugo-docs-i18n.exe
 BINARY_UNIX=$(BINARY_NAME)_unix
+VER="v0.1.2"
+VERM="dev version 0.1.2"
 
 all: test build
 build:
-		$(GOBUILD) -o $(BINARY_NAME) -v
+		$(GOBUILD) -o $(BINARY_NAME) -v -buildvcs=false
 test:
 		$(GOTEST) -v ./...
+test-doci18n:
+		$(GOTEST) -v ./doci18n
+test-locale:
+		$(GOTEST) -v ./locale
 clean:
 		$(GOCLEAN)
 		rm -f $(BINARY_NAME)
@@ -25,4 +31,6 @@ deps:
 		$(GOGET) github.com/spf13/viper
 		$(GOGET) github.com/spf13/pflag
 		$(GOMODTIDY)
-
+tags:
+		git tag -a $(VER) -m $(VERM)
+		git push origin --tags
