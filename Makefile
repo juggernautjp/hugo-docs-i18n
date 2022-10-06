@@ -7,8 +7,8 @@ GOGET=$(GOCMD) get
 GOMODTIDY=$(GOCMD) mod tidy
 BINARY_NAME=hugo-docs-i18n.exe
 BINARY_UNIX=$(BINARY_NAME)_unix
-VER="v0.1.4"
-VERM="dev version 0.1.4"
+VER="v0.1.5"
+VERM="dev version 0.1.5"
 
 all: test build
 build:

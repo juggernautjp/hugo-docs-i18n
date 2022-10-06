@@ -33,7 +33,7 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of hugo-docs-i18n",
 	Long: `All software has versions. This is hugo-docs-i18n's`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("hugo-docs-i18n v0.1.4 -- HEAD")
+		fmt.Println("hugo-docs-i18n v0.1.5 -- HEAD")
 	},
 }
 
