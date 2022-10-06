@@ -7,8 +7,8 @@ GOGET=$(GOCMD) get
 GOMODTIDY=$(GOCMD) mod tidy
 BINARY_NAME=hugo-docs-i18n.exe
 BINARY_UNIX=$(BINARY_NAME)_unix
-VER="v0.1.2"
-VERM="dev version 0.1.2"
+VER="v0.1.4"
+VERM="dev version 0.1.4"
 
 all: test build
 build:
@@ -31,6 +31,8 @@ deps:
 		$(GOGET) github.com/spf13/viper
 		$(GOGET) github.com/spf13/pflag
 		$(GOMODTIDY)
-tags:
+ git-tags:
 		git tag -a $(VER) -m $(VERM)
 		git push origin --tags
+ git-fix:
+		git config --global --add safe.directory F:/Docs.repo/hugo-docs-i18n

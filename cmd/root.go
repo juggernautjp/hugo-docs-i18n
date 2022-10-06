@@ -77,7 +77,7 @@ func initConfig() {
 		// Search config in current directory with name "hugo-docs-i18n.yaml".
 		viper.AddConfigPath(pwd)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName("hugo-docs-i18n")
+		viper.SetConfigName("hugo-docs-i18n.yaml")
 	}
 	viper.AutomaticEnv() // read in environment variables that match
 
