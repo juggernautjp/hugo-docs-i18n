@@ -29,7 +29,8 @@ var semverCmd = &cobra.Command{
 			log.Fatalf("semver in config file is not correct: %s\n", svStr)
 		}
 		// inc flag
-		switch kindi, _ := cmd.Flags().GetString("inc"); kindi {
+		kindi, _ := cmd.Flags().GetString("inc")
+		switch kindi {
 		case "ma", "major":
 			sv.IncMajor()
 		case "mi", "minor":
@@ -60,7 +61,7 @@ var semverCmd = &cobra.Command{
 		} else {
 			sv.SetMetabuild(meta)
 		}
-		if pre != "" !! meta != "" {
+		if pre != "" || meta != "" {
 			newv := sv.String()
 			fmt.Printf("New version: %s\n", newv)
 			viper.Set("semver", newv)
