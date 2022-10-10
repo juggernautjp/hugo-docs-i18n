@@ -19,6 +19,9 @@ content-dir: content
 data-dir: data/i18n
 iso-md: ISO_639-1.md
 iso-json: ISO_639-1.json
+semver: 0.1.0
+ver-msg: Release version
+# ver-msg: Dev version
 `
 
 // Save config data to YAML file

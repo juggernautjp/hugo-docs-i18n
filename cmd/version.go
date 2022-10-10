@@ -23,8 +23,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // versionCmd represents the version command
@@ -33,7 +35,18 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of hugo-docs-i18n",
 	Long: `All software has versions. This is hugo-docs-i18n's`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("hugo-docs-i18n v0.1.7 -- HEAD")
+		sver := viper.GetString("semver")
+		vmsg := viper.GetString("ver-msg")
+		if sver == "" {
+			log.Fatalln("You should execute \"hugo-docs-i18n init\"")
+		}
+		if isGit, _ := cmd.Flags().GetBool("git"); isGit {
+			fmt.Printf("v%s", sver)
+		} else if isMsg, _ := cmd.Flags().GetBool("msg"); isMsg {
+			fmt.Printf("%s %s", vmsg, sver)
+		} else {
+			fmt.Printf("hugo-docs-i18n %s %s\n", vmsg, sver)
+		}
 	},
 }
 
@@ -48,5 +61,6 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// versionCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	versionCmd.Flags().BoolP("git", "g", false, "show version for git tag")
+	versionCmd.Flags().BoolP("msg", "m", false, "show version for git message")
 }

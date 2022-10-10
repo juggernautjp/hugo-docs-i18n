@@ -27,7 +27,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	// "github.com/spf13/viper"
+	"github.com/spf13/viper"
 	"github.com/juggernautjp/hugo-docs-i18n/locale"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
@@ -47,10 +47,10 @@ ISO 639-1 standard language codes:
 		tl, _ := cmd.Flags().GetString("lang")
 		tc, _ := cmd.Flags().GetString("code")
 		fmt.Printf("searching lang=%s, code=%s ...\n", tl, tc)
-		// ldb := viper.GetString("iso-json")
-		// datadir := viper.GetString("data-dir")
-		ldb, _ := cmd.Flags().GetString("iso-json")
-		datadir, _ := cmd.Flags().GetString("data-dir")
+		ldb := viper.GetString("iso-json")
+		datadir := viper.GetString("data-dir")
+		// ldb, _ := cmd.Flags().GetString("iso-json")
+		// datadir, _ := cmd.Flags().GetString("data-dir")
 		var fn string
 		if !doci18n.IsExist(ldb) {
 			fn = filepath.Join(datadir, ldb)

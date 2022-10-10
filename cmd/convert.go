@@ -28,7 +28,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	// "github.com/spf13/viper"
+	"github.com/spf13/viper"
 	"github.com/juggernautjp/hugo-docs-i18n/locale"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
@@ -46,19 +46,19 @@ ISO 639-1 standard language codes:
 The above file is saved as data/ISO_639-1.md,
 and will be converted to JSON file as data/ISO_639-1.json.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// datadir := viper.GetString("data-dir")
+		datadir := viper.GetString("data-dir")
 		// infn := viper.GetString("md")
-		datadir, _ := cmd.Flags().GetString("data-dir")
+		// datadir, _ := cmd.Flags().GetString("data-dir")
 		infn, _ := cmd.Flags().GetString("md")
 		if infn == "" {
-			// infn = viper.GetString("iso-md")
-			infn, _ = cmd.Flags().GetString("iso-md")
+			infn = viper.GetString("iso-md")
+			// infn, _ = cmd.Flags().GetString("iso-md")
 		}
 		// outfn := viper.GetString("json")
 		outfn, _ := cmd.Flags().GetString("json")
 		if outfn == "" {
-			// outfn = viper.GetString("iso-json")
-			outfn, _ = cmd.Flags().GetString("iso-json")
+			outfn = viper.GetString("iso-json")
+			// outfn, _ = cmd.Flags().GetString("iso-json")
 		}
 		var infname, outfname string
 		if !doci18n.IsExist(infn) {
