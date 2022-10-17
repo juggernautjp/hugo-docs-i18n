@@ -29,14 +29,16 @@ func TestCountDraftFile(t *testing.T) {
 			{ Path: filepath.Join(dir, "dir_b/draft_b.md"), Title: "title draft_b", Draft: true, },
 			{ Path: filepath.Join(dir, "dir_b/notdraft_b.md"), Title: "title notdraft_b", Draft: false, },
 			{ Path: filepath.Join(dir, "draft_c.md"), Title: "title draft_c", Draft: true, },
+			{ Path: filepath.Join(dir, "myshowcase/no_draft.md"), Title: "YAML NoDraft Markdown", Draft: false, },
+			{ Path: filepath.Join(dir, "myshowcase/no_frontmatter.md"), Title: "", Draft: false, },
 			{ Path: filepath.Join(dir, "notdraft_c.md"), Title: "title notdraft_c", Draft: false, },
 		},
 	}
 	wantCD := CountDraft{
 		Draft: 3,
-		NotDraft: 3,
-		Total: 3+3,
-		Ratio: float32(3)/float32(3+3),
+		NotDraft: 5,
+		Total: 5+3,
+		Ratio: float32(5)/float32(5+3),
 	}
 
 	// Run CountDraftFile()
@@ -68,17 +70,19 @@ func TestSaveCountJSONFile(t *testing.T) {
 	var wantJson DraftJSON = DraftJSON{
 		Count: CountDraft{
 			Draft: 3,
-			NotDraft: 3,
-			Total: 3+3,
-			Ratio: float32(3)/float32(3+3),
+			NotDraft: 5,
+			Total: 5+3,
+			Ratio: float32(5)/float32(5+3),
 			},
-		Path: PathJSON{
+		Paths: PathJSON{
 			Files: []PathPair{
 				{ Path: filepath.Join(dir, "dir_a/draft_a.md"), Title: "title draft_a", Draft: true, },
 				{ Path: filepath.Join(dir, "dir_a/notdraft_a.md"), Title: "title notdraft_a", Draft: false, },
 				{ Path: filepath.Join(dir, "dir_b/draft_b.md"), Title: "title draft_b", Draft: true, },
 				{ Path: filepath.Join(dir, "dir_b/notdraft_b.md"), Title: "title notdraft_b", Draft: false, },
 				{ Path: filepath.Join(dir, "draft_c.md"), Title: "title draft_c", Draft: true, },
+				{ Path: filepath.Join(dir, "myshowcase/no_draft.md"), Title: "YAML NoDraft Markdown", Draft: false, },
+				{ Path: filepath.Join(dir, "myshowcase/no_frontmatter.md"), Title: "", Draft: false, },
 				{ Path: filepath.Join(dir, "notdraft_c.md"), Title: "title notdraft_c", Draft: false, },
 			},
 		},

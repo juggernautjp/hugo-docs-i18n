@@ -64,24 +64,26 @@ func ReadContentFile(infn string) (pageparser.ContentFrontMatter, error) {
 
 	// Check if the file is file and not zero-size
 	if !IsRegularFile(infn) {
-		return pf, fmt.Errorf("Target path %q is not a file", infn)
+		return pf, fmt.Errorf("File is not regular: %s", infn)
 	}
 
 	// Check if the specified file is content file
 	if !files.IsContentFile(infn) {
-		return pf, fmt.Errorf("Target path %q is not a known content format", infn)
+		return pf, fmt.Errorf("File is not known content format: %s", infn)
 	}
 
 	// ReadFile 
 	contentBytes, err = os.ReadFile(infn)
 	if err != nil {
-		return pf, fmt.Errorf("Failed to read file %q: %w", infn, err)
+		// return pf, fmt.Errorf("Failed to read file %q: %w", infn, err)
+		return pf, err
 	}
 
 	// var pf ContentFrontMatter (defined in parser/pageparser/pageparser.go)
 	pf, err = pageparser.ParseFrontMatterAndContent(bytes.NewReader(contentBytes))
 	if err != nil {
-		return pf, fmt.Errorf("Failed to parse file %q: %w", infn, err)
+		// return pf, fmt.Errorf("Failed to parse file %q: %w", infn, err)
+		return pf, err
 	}
 
 	// better handling of dates in formats that don't have support for them
@@ -92,6 +94,10 @@ func ReadContentFile(infn string) (pageparser.ContentFrontMatter, error) {
 				pf.FrontMatter[k] = vv.Format(time.RFC3339)
 			}
 		}
+	} else {
+		// pageparser.ParseFrontMatterAndContent() return pf.Content == nil, if the file has no FrontMatter.
+		// So, ReadContentFile() set pf.Content with contentBytes that returned by os.ReadFile().
+		pf.Content = contentBytes
 	}
 	return pf, nil
 }
@@ -124,6 +130,17 @@ func IsDraftFile(infn string) (bool, string, error) {
 // copy not-draft file from <infn> to <outfn>,
 // with setting which draft = true for translation. 
 func CopyContentFile(infn, outfn string) (bool, error) {
+	// if outfn is "", return false/error.
+	if outfn == "" {
+		return false, fmt.Errorf("Dst file is not specified")
+	}
+	// if file is already exist
+	/*
+	if IsExist(outfn) {
+		return false, fmt.Errorf("File already exist")
+	}
+	*/
+
 	// ReadContentFile()
 	pf, err := ReadContentFile(infn)
 	if err != nil {
@@ -144,25 +161,21 @@ func CopyContentFile(infn, outfn string) (bool, error) {
 			pf.FrontMatter[k] = true
 		}
 	}
-	// if pf.FrontMatter dose not have "draft" field
-	if i == len(pf.FrontMatter) {
-		pf.FrontMatter["draft"] = true
-	}
 	// if this page is draft, return true (the page is draft).
 	if isDraft {
 		return false, nil
 	}
-	// if this page is not draft and not copy the page, return false (the page is not draft).
-	if outfn == "" {
-		return false, fmt.Errorf("Out file is not specified.")
-	}
-	// if file is already exist
-	if IsExist(outfn) {
-		return false, fmt.Errorf("File already exist: %s", outfn)
+	// if pf.FrontMatter dose not have "draft" field, add "draft: true"
+	if i == len(pf.FrontMatter) {
+		pf.FrontMatter["draft"] = true
 	}
 
-	// Marsharl FrontMatter
+	// Marshal FrontMatter
 	var newContent bytes.Buffer
+	if pf.FrontMatterFormat == "" {
+		// if the file has no FrontMatter, write YAML FrontMatter with "draft: true"
+		pf.FrontMatterFormat = metadecoders.YAML
+	}
 	err = parser.InterfaceToFrontMatter(pf.FrontMatter, pf.FrontMatterFormat, &newContent)
 	if err != nil {
 		return false, err
@@ -172,7 +185,8 @@ func CopyContentFile(infn, outfn string) (bool, error) {
 	// output FrontMatter and Content to outfn
 	outfile, err := os.Create(outfn)
 	if err != nil {
-		return false, fmt.Errorf("Failed to create file %q: %w", outfn, err)
+		// return false, fmt.Errorf("Failed to create file %q: %w", outfn, err)
+		return false, err
 	}
 	// close the file
 	defer outfile.Close()
@@ -183,38 +197,40 @@ func CopyContentFile(infn, outfn string) (bool, error) {
 }
 
 // Copy not-content file, including CSS, jpeg, etc. 
-func CopyNotContentFile(infn, outfn string) bool {
+func CopyNotContentFile(infn, outfn string) (bool, error) {
 	// Check if the file is file and not zero-size
 	if !IsRegularFile(infn) {
-		return false
+		return false, fmt.Errorf("File is not regular")
 	}
 
 	// Check if the specified file is content file
 	if files.IsContentFile(infn) {
-		return false
+		return false, nil
 	}
 
-	// if file is already exist
+	// if the file is already exist, overwrite
+	/*  
 	if IsExist(outfn) {
 		return false
 	}
+	*/
 
 	// copy file
 	src, err := os.Open(infn)
 	if err != nil {
-		return false
+		return false, err
 	}
 	defer src.Close()
 
 	dst, err := os.Create(outfn)
 	if err != nil {
-		return false
+		return false, err
 	}
 	defer dst.Close()
 
 	_, err = io.Copy(dst, src)
-	if  err != nil {
-		return false
+	if err != nil {
+		return false, err
 	}
-	return true
+	return true, nil
 }

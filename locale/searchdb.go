@@ -32,11 +32,13 @@ func SearchLocaleFile(infn, lg, cd string) ([]LangPair, error) {
 	// read locale (lang/code pair) data from JSON file
 	contentBytes, err := os.ReadFile(infn)
 	if err != nil {
-		return nil, fmt.Errorf("Error when reading file: %s", err)
+		// return nil, fmt.Errorf("Error when reading file: %s", err)
+		return nil, err
 	}
 	var gotJson LangJSON
 	if err := json.Unmarshal(contentBytes, &gotJson); err != nil {
-		return nil, fmt.Errorf("Error when unmarshaling: %s", err)
+		// return nil, fmt.Errorf("Error when unmarshaling: %s", err)
+		return nil, err
 	}
 
 	// Match flag?

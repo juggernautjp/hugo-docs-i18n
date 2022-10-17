@@ -1,11 +1,11 @@
 {
   "count": {
     "draft": 3,
-    "notdraft": 3,
-    "total": 6,
-    "ratio": 0.5
+    "notdraft": 5,
+    "total": 8,
+    "ratio": 0.625
   },
-  "path": {
+  "paths": {
     "files": [
       {
         "path": "testdata\\zn\\dir_a\\draft_a.md",
@@ -31,6 +31,16 @@
         "path": "testdata\\zn\\draft_c.md",
         "title": "title draft_c",
         "draft": true
+      },
+      {
+        "path": "testdata\\zn\\myshowcase\\no_draft.md",
+        "title": "YAML NoDraft Markdown",
+        "draft": false
+      },
+      {
+        "path": "testdata\\zn\\myshowcase\\no_frontmatter.md",
+        "title": "",
+        "draft": false
       },
       {
         "path": "testdata\\zn\\notdraft_c.md",

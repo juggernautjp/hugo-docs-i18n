@@ -30,6 +30,8 @@ func TestCopyContentDir(t *testing.T) {
 			{ Path: filepath.Join(srcdir, "dir_b/draft_b.md"), Draft: false, },
 			{ Path: filepath.Join(srcdir, "dir_b/notdraft_b.md"), Draft: true, },
 			{ Path: filepath.Join(srcdir, "draft_c.md"), Draft: false, },
+			{ Path: filepath.Join(srcdir, "myshowcase/no_draft.md"), Draft: true, },
+			{ Path: filepath.Join(srcdir, "myshowcase/no_frontmatter.md"), Draft: true, },
 			{ Path: filepath.Join(srcdir, "notdraft_c.md"), Draft: true, },
 		},
 	}
@@ -44,17 +46,22 @@ func TestCopyContentDir(t *testing.T) {
 		filepath.Join(dstdir, "css", "style.css"),
 		filepath.Join(dstdir, "dir_a", "notdraft_a.md"),
 		filepath.Join(dstdir, "dir_b", "notdraft_b.md"),
-		filepath.Join(dstdir, "images", "hugo-with-nanobox.png"),
+		filepath.Join(dstdir, "myshowcase", "hugo-with-nanobox.png"),
+		filepath.Join(dstdir, "myshowcase", "no_draft.md"),
+		filepath.Join(dstdir, "myshowcase", "no_frontmatter.md"),
 		filepath.Join(dstdir, "notdraft_c.md"),
 	}
 	wantDraft := []string {
 		"dir_a/notdraft_a.md",
 		"dir_b/notdraft_b.md",
+		"myshowcase/no_draft.md",
+		"myshowcase/no_frontmatter.md",
 		"notdraft_c.md",
 	}
+	outfn := filepath.Join("testdata", GetLogFileName())
 
 	// Run CopyContentDir()
-	gotPJ, err := CopyContentDir(srcdir, dstdir)
+	gotPJ, err := CopyContentDir(srcdir, dstdir, outfn)
 	if err != nil {
 		t.Errorf("TestCopyContentDir: %v", err)
 	}

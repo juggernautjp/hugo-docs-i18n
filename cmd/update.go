@@ -24,7 +24,8 @@ package cmd
 import (
 	"fmt"
 	"log"
-
+	"path/filepath"
+	
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
@@ -39,8 +40,9 @@ Before execute this command, you should run "hugo-docs-i18n init".`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("update called")
 		srcdir := viper.GetString("source-dir")
+		datadir := viper.GetString("data-dir")
 		// srcdir, _ := cmd.Flags().GetString("source-dir")
-		if srcdir == "" {
+		if srcdir == "" || datadir == "" {
 			log.Fatalln("You should execute \"hugo-docs-i18n init\"")
 		}
 		// dstdir := viper.GetString("target-dir")
@@ -53,8 +55,10 @@ Before execute this command, you should run "hugo-docs-i18n init".`,
 			log.Fatalf(`Directory dose not exist: %s`, dstdir)
 		}
 		*/
+		// Get data filename to save JSON data
+		logfn := filepath.Join(datadir, doci18n.GetLogFileName())
 		// Copy content directory from source language (English) to target language
-		if _, err := doci18n.CopyContentDir(srcdir, dstdir); err != nil {
+		if _, err := doci18n.CopyContentDir(srcdir, dstdir, logfn); err != nil {
 			log.Fatalf("Error when copying: %s -> %s: %s\n", srcdir, dstdir, err)
 		}
 	},

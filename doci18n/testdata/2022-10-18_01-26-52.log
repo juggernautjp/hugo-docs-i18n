@@ -1,0 +1,53 @@
+{
+  "header": {
+    "date": "2022-10-18 01:26:52 +0900 JST",
+    "srcdir": "testdata/zn",
+    "dstdir": "testdata/ko"
+  },
+  "paths": {
+    "contentfiles": [
+      {
+        "path": "testdata\\ko\\dir_a\\draft_a.md",
+        "result": 1
+      },
+      {
+        "path": "testdata\\ko\\dir_a\\notdraft_a.md",
+        "result": 1
+      },
+      {
+        "path": "testdata\\ko\\dir_b\\draft_b.md",
+        "result": 1
+      },
+      {
+        "path": "testdata\\ko\\dir_b\\notdraft_b.md",
+        "result": 1
+      },
+      {
+        "path": "testdata\\ko\\draft_c.md",
+        "result": 1
+      },
+      {
+        "path": "testdata\\ko\\myshowcase\\no_draft.md",
+        "result": 1
+      },
+      {
+        "path": "testdata\\ko\\myshowcase\\no_frontmatter.md",
+        "result": 1
+      },
+      {
+        "path": "testdata\\ko\\notdraft_c.md",
+        "result": 3
+      }
+    ],
+    "notcontentfiles": [
+      {
+        "path": "testdata\\ko\\css\\style.css",
+        "result": 1
+      },
+      {
+        "path": "testdata\\ko\\myshowcase\\hugo-with-nanobox.png",
+        "result": 2
+      }
+    ]
+  }
+}

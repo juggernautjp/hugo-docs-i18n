@@ -14,11 +14,13 @@ import (
 	"log"
 	"strings"
 	// "time"
-	"encoding/json"
+	// "encoding/json"
 	"path/filepath"
 	// "reflect"
 	"testing"
 
+	"github.com/gohugoio/hugo/parser/metadecoders"
+	// "github.com/gohugoio/hugo/parser/pageparser"
 	"github.com/spf13/cast"
 )
 
@@ -143,15 +145,17 @@ func TestIsDir(t *testing.T) {
 // Test for ReadContentFile()
 func TestReadContentFile(t *testing.T) {
 	// Test data #1: FrontMatter from JSON
+	/*
 	var wantFM Sample
 	if err := json.Unmarshal(sampleBytes, &wantFM); err != nil {
 		t.Fatalf("Failed to read FrontMatter JSON: %v", err)
 	}
 	// fmt.Printf("%+v\n", wantFM)
+	*/
 
 	// Test data #2: Content from Markdown file
-	const dir = "testdata/en"
-	infn := filepath.Join(dir, "NO_FrontMatter.md")
+	const dir = "testdata"
+	infn := filepath.Join(dir, "YAML_NoFrontMatter.md")
 	// b, err := static.ReadFile(infn)
 	b, err := os.ReadFile(infn)
 	if err != nil {
@@ -161,10 +165,46 @@ func TestReadContentFile(t *testing.T) {
 	// fmt.Printf("%s\n", wantRest)
 
 	// Test data #4: File name to read for copy file
-	testCases := []string {
-		"JSON_FrontMatter.md",
-		"TOML_FrontMatter.md",
-		"YAML_FrontMatter.md",
+	testCases := []struct {
+		path string
+		date string
+		title string
+		weight int
+		draft bool
+		format metadecoders.Format
+	}{
+		{
+			path: "YAML_Draft.md",
+			date: "2017-03-02T12:00:00-05:00",
+			title: "YAML Draft Markdown",
+			weight: 50,
+			draft: true,
+			format: metadecoders.YAML,
+		},
+		{
+			path: "YAML_NotDraft.md",
+			date: "2017-03-02T12:00:00-05:00",
+			title: "YAML NotDraft Markdown",
+			weight: 50,
+			draft: false,
+			format: metadecoders.YAML,
+		},
+		{
+			path: "YAML_NoDraft.md",
+			date: "2017-03-02T12:00:00-05:00",
+			title: "YAML NoDraft Markdown",
+			weight: 50,
+			draft: false,
+			format: metadecoders.YAML,
+		},
+		{
+			path: "YAML_NoFrontMatter.md",
+			date: "",
+			title: "",
+			weight: 0,
+			draft: false,
+			format: "",
+		},
 	}
 
 	// Test each Field of Struct
@@ -207,16 +247,30 @@ func TestReadContentFile(t *testing.T) {
 	// Case 1: 
 	t.Run("Case 1: TestReadContentFile()", func(t *testing.T) {
 		for _, fn := range testCases {
-			infname := filepath.Join(dir, fn)
+			infname := filepath.Join(dir, fn.path)
 			// Test Run
 			cfm, err := ReadContentFile(infname)
 			if err != nil {
 				t.Fatalf("Failed to read file %s: %v", infn, err)
 			}
-			checkFunc(&wantFM, cfm.FrontMatter, fn)
+			wantFM := Sample{
+				Title: fn.title,
+				Date: fn.date,
+				Weight: fn.weight,
+				Draft: fn.draft,
+			}
+			// Test FrontMatter
+			checkFunc(&wantFM, cfm.FrontMatter, fn.path)
+			// Test metadecoders.Format value
+			gotFormat := cfm.FrontMatterFormat
+			wantFormat := fn.format
+			if gotFormat != wantFormat {
+				t.Errorf("FrontMatterFormat: %s\n\ngot : %v\nwant: %v\n", fn.path, gotFormat, wantFormat)
+			}
+			// Test Content (below FrontMatter)
 			gotRest := string(cfm.Content)
 			if gotRest != wantRest {
-				t.Errorf("Rest Contents: %s\n\ngot : %v\nwant: %v\n", fn, gotRest, wantRest)
+				t.Errorf("Rest Contents: %s\n\ngot : %v\nwant: %v\n", fn.path, gotRest, wantRest)
 			}
 		}
 	})
@@ -239,6 +293,16 @@ func TestIsDraftFile(t *testing.T) {
 		{
 			path: "YAML_NotDraft.md",
 			title: "YAML NotDraft Markdown",
+			draft: false,
+		},
+		{
+			path: "YAML_NoDraft.md",
+			title: "YAML NoDraft Markdown",
+			draft: false,
+		},
+		{
+			path: "YAML_NoFrontMatter.md",
+			title: "",
 			draft: false,
 		},
 	}
@@ -269,6 +333,8 @@ func TestCopyContentFile(t *testing.T) {
 	testCases := map[string]bool {
 		"YAML_Draft.md": false,
 		"YAML_NotDraft.md": true,
+		"YAML_NoDraft.md": true,
+		"YAML_NoFrontMatter.md": true,
 	}
 	outdir := t.TempDir()
 	/*
@@ -324,10 +390,9 @@ func TestCopyNotContentFile(t *testing.T) {
 	// Test data #3: File name to read for draft test 
 	const dir = "testdata/zn"
 	testCases := map[string]bool {
-		"images/hugo-with-nanobox.png": true,
+		"myshowcase/hugo-with-nanobox.png": true,
 		"css/style.css": true,
 		"dir_a/draft_a.md": false,
-		"dir_a/nofile.md": false,
 	}
 	outdir := t.TempDir()
 	// Case 3: 
@@ -340,7 +405,10 @@ func TestCopyNotContentFile(t *testing.T) {
 				os.Remove(outfname)
 			}
 			// Test Run
-			got := CopyNotContentFile(infname, outfname)
+			got, err := CopyNotContentFile(infname, outfname)
+			if err != nil {
+				t.Fatalf("Failed to read copied file %s: %v", outfname, err)
+			}
 			if got != want {
 				t.Errorf("Faild to copy %s to %s\n", infname, outfname)
 			}

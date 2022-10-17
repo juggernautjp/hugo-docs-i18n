@@ -26,7 +26,8 @@ func WalkDir(dir string) ([]string, error) {
 			// Recursively calls WalkDir in the case of a directory
 			p, err := WalkDir(filepath.Join(dir, file.Name()))
 			if err != nil {
-				return nil, fmt.Errorf("WalkDir %s: %w", filepath.Join(dir, file.Name()), err)
+				// return nil, fmt.Errorf("WalkDir %s: %w", filepath.Join(dir, file.Name()), err)
+				return nil, err
 			}
 			// Merge into the caller's "paths" variable.
 			paths = append(paths, p...)
@@ -52,12 +53,14 @@ func WalkDir2(dir string, walkDirFunc func(path string, d fs.DirEntry) error) ([
 		if file.IsDir() {
 			// call walkDirFunc() for directory `path`
 			if err := walkDirFunc(path, file); err != nil {
-				return nil, fmt.Errorf("walkDirFunc %s: %w", path, err)
+				// return nil, fmt.Errorf("walkDirFunc %s: %w", path, err)
+				return nil, err
 			}
 			// Recursively calls WalkDir in the case of a directory
 			p, err := WalkDir2(path, walkDirFunc)
 			if err != nil {
-				return nil, fmt.Errorf("WalkDir2 %s: %w", path, err)
+				// return nil, fmt.Errorf("WalkDir2 %s: %w", path, err)
+				return nil, err
 			}
 			// Merge into the caller's "paths" variable.
 			paths = append(paths, p...)
@@ -66,7 +69,8 @@ func WalkDir2(dir string, walkDirFunc func(path string, d fs.DirEntry) error) ([
 
 			// call walkDirFunc() for directory `path`
 			if err := walkDirFunc(path, file); err != nil {
-				return nil, fmt.Errorf("walkDirFunc %s: %w", path, err)
+				// return nil, fmt.Errorf("walkDirFunc %s: %w", path, err)
+				return nil, err
 			}
 			// we'll add it to "paths" variable.
 			paths = append(paths, path)
@@ -90,11 +94,13 @@ func WalkDir3(srcdir, dstdir string, walkDirFunc func(srcpath, dstpath string, d
 		if file.IsDir() {
 			// call walkDirFunc() for directory `path`
 			if err := walkDirFunc(srcpath, dstpath, file); err != nil {
-				return fmt.Errorf("walkDirFunc %s: %w", srcpath, err)
+				// return fmt.Errorf("walkDirFunc %s: %w", srcpath, err)
+				return err
 			}
 			// Recursively calls WalkDir in the case of a directory
 			if err := WalkDir3(srcpath, dstpath, walkDirFunc); err != nil {
-				return fmt.Errorf("WalkDir3 %s: %w", srcpath, err)
+				// return fmt.Errorf("WalkDir3 %s: %w", srcpath, err)
+				return err
 			}
 			// Merge into the caller's "paths" variable.
 			// paths = append(paths, p...)
@@ -103,7 +109,8 @@ func WalkDir3(srcdir, dstdir string, walkDirFunc func(srcpath, dstpath string, d
 
 			// call walkDirFunc() for directory `path`
 			if err := walkDirFunc(srcpath, dstpath, file); err != nil {
-				return fmt.Errorf("walkDirFunc %s: %w", srcpath, err)
+				// return fmt.Errorf("walkDirFunc %s: %w", srcpath, err)
+				return err
 			}
 			// we'll add it to "paths" variable.
 			// paths = append(paths, srcpath)

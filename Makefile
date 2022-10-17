@@ -1,3 +1,4 @@
+SHELL=/bin/bash
 # Go パラメータ
 GOCMD=go
 GOBUILD=$(GOCMD) build
@@ -10,8 +11,10 @@ CONFIG_NAME=hugo-docs-i18n.yaml
 TEST_DIR=content/ja
 BUG_DIR=content/en/myshowcase
 BINARY_UNIX=$(BINARY_NAME)_unix
-GIT_VER=$$(./hugo-docs-i18n.exe version -g)
-VER_MSG=$$(./hugo-docs-i18n.exe version -m)
+# GIT_VER=$$(./hugo-docs-i18n.exe version -g)
+GIT_VER=`./hugo-docs-i18n.exe version -g`
+# VER_MSG=$$(./hugo-docs-i18n.exe version -m)
+VER_MSG=`./hugo-docs-i18n.exe version -m`
 # NOW=`date`
 NOW=$$(date)
 
@@ -26,6 +29,8 @@ test-doci18n:
 		$(GOTEST) -v ./doci18n
 test-locale:
 		$(GOTEST) -v ./locale
+test-cmd:
+		$(GOTEST) -v ./cmd
 clean:
 		$(GOCLEAN)
 		rm -f $(BINARY_NAME)
@@ -41,9 +46,9 @@ deps:
 		$(GOGET) github.com/spf13/pflag
 		$(GOMODTIDY)
 git-tags: $(BINARY_NAME)
-		git tag -a $(GIT_VER) -m $(VER_MSG)
+		git tag -a $(GIT_VER) -m "$(VER_MSG)"
 		git push origin --tags
 git-fix:
 		git config --global --add safe.directory F:/Docs.repo/hugo-docs-i18n
 now: $(BINARY_NAME)
-		@echo $(NOW) $(GIT_VER) $(VER_MSG)
+		@echo $(NOW) $(GIT_VER) "$(VER_MSG)"

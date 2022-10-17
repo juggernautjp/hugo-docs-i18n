@@ -18,7 +18,7 @@ import (
 // DraftJSON
 type DraftJSON struct {
 	Count CountDraft `json:"count"`
-	Path PathJSON `json:"path"`
+	Paths PathJSON `json:"paths"`
 }
 
 // Hugo file (path/value pair) data
@@ -93,12 +93,13 @@ func CountDraftFile(dir string) (PathJSON, CountDraft, error) {
 func SaveCountJSONFile(outfn string, pj PathJSON, cd CountDraft) error {
 	var dj DraftJSON
 	dj.Count = cd
-	dj.Path = pj
+	dj.Paths = pj
 
 	// open the file
 	outfile, err := os.Create(outfn)
 	if err != nil {
-		return fmt.Errorf("Error when opening file: %s", err)
+		// return fmt.Errorf("Error when opening file: %s", err)
+		return err
 	}
 	// close the file
 	defer outfile.Close()
@@ -106,7 +107,8 @@ func SaveCountJSONFile(outfn string, pj PathJSON, cd CountDraft) error {
 	// write DraftJSON
 	sd, err := json.MarshalIndent(dj, "", "  ")
 	if err != nil {
-		return fmt.Errorf("Error when marshaling DraftJSON: %s", err)
+		// return fmt.Errorf("Error when marshaling DraftJSON: %s", err)
+		return err
 	}
 	fmt.Fprintln(outfile, string(sd))
 	return nil
