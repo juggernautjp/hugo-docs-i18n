@@ -60,6 +60,9 @@ and will be converted to JSON file as data/ISO_639-1.json.`,
 			outfn = viper.GetString("iso-json")
 			// outfn, _ = cmd.Flags().GetString("iso-json")
 		}
+		if infn == "" || outfn == "" {
+			log.Fatalln("You should execute \"hugo-docs-i18n init\"")
+		}
 		var infname, outfname string
 		if !doci18n.IsExist(infn) {
 			infname = filepath.Join(datadir, infn)
@@ -72,7 +75,7 @@ and will be converted to JSON file as data/ISO_639-1.json.`,
 			outfname = outfn
 		}
 		if infname == "" {
-			log.Fatalf(`Locale JSON file dose not exist: %s`, infn)
+			log.Fatalf(`Locale JSON file dose not exist: %s\n`, infn)
 		}
 		// convert Markdown to JSON
 		fmt.Printf("converting %s to %s ...\n", infname, outfname)

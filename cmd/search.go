@@ -61,7 +61,7 @@ ISO 639-1 standard language codes:
 			fn = ldb
 		}
 		if fn == "" {
-			log.Fatalf(`Locale JSON file dose not exist: %s`, ldb)
+			log.Fatalf(`Locale JSON file dose not exist: %s\nYou should execute "hugo-docs-i18n init"`, ldb)
 		}
 		pairs, err := locale.SearchLocaleFile(fn, tl, tc)
 		if err != nil {

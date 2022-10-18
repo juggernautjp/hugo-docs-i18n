@@ -9,6 +9,7 @@ GOMODTIDY=$(GOCMD) mod tidy
 BINARY_NAME=hugo-docs-i18n.exe
 CONFIG_NAME=hugo-docs-i18n.yaml
 TEST_DIR=content/ja
+TEST_VER=docsi18n/version.json
 BUG_DIR=content/en/myshowcase
 BINARY_UNIX=$(BINARY_NAME)_unix
 # GIT_VER=$$(./hugo-docs-i18n.exe version -g)
@@ -21,7 +22,7 @@ NOW=$$(date)
 all: test build
 build: $(BINARY_NAME)
 
-$(BINARY_NAME):
+$(BINARY_NAME):	doci18n/* locale/* cmd/*
 		$(GOBUILD) -o $(BINARY_NAME) -v -buildvcs=false
 test: 
 		$(GOTEST) -v ./...
@@ -33,6 +34,7 @@ test-cmd:
 		$(GOTEST) -v ./cmd
 clean:
 		$(GOCLEAN)
+		rm -f $(TEST_VER)
 		rm -f $(BINARY_NAME)
 		rm -f $(BINARY_UNIX)
 		rm -f $(CONFIG_NAME)
@@ -47,7 +49,7 @@ deps:
 		$(GOMODTIDY)
 git-tags: $(BINARY_NAME)
 		git tag -a $(GIT_VER) -m "$(VER_MSG)"
-		git push origin --tags
+#		git push origin --tags
 git-fix:
 		git config --global --add safe.directory F:/Docs.repo/hugo-docs-i18n
 now: $(BINARY_NAME)

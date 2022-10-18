@@ -2,7 +2,7 @@
 Copyright © 2022 juggernautjp <katsutoshi.harada@gmail.com>
 
 Semver function test
-s*/
+*/
 
 package doci18n
 

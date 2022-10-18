@@ -48,10 +48,13 @@ The data is stored "data/i18n/<code>.json, and show the page.`,
 		if tdir == "" && tcode == "" {
 			log.Fatalln(`Both flags are not specified`)
 		}
+		cdir := viper.GetString("content-dir")
+		if cdir == "" {
+			log.Fatalln("You should execute \"hugo-docs-i18n init\"")
+		}		
 		if tcode == "" {
 			tcode = filepath.Base(tdir)
 		} else if tdir == "" {
-			cdir := viper.GetString("content-dir")
 			// cdir, _ := cmd.Flags().GetString("content-dir")
 			tdir = filepath.Join(cdir, tcode)
 		}
@@ -65,12 +68,12 @@ The data is stored "data/i18n/<code>.json, and show the page.`,
 		targetdname := filepath.Join(pwd, tdir)
 		*/
 		if !doci18n.IsExist(tdir) {
-			log.Fatalf(`Directory dose not exist: %s`, tdir)
+			log.Fatalf("Directory dose not exist: %s", tdir)
 		}
 		// Count draft files under the directory
 		gotPJ, gotCD, err := doci18n.CountDraftFile(tdir)
 		if err != nil {
-			log.Fatalf(`Can not count draft files: %s`, err)
+			log.Fatalf("Can not count draft files: %s", err)
 		}
 		// Get data filename to save JSON data
 		ddir := viper.GetString("data-dir")

@@ -23,10 +23,11 @@ package cmd
 
 import (
 	"fmt"
-	"log"
+	// "log"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	// "github.com/spf13/viper"
+	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
 
 // versionCmd represents the version command
@@ -35,11 +36,9 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of hugo-docs-i18n",
 	Long: `All software has versions. This is hugo-docs-i18n's`,
 	Run: func(cmd *cobra.Command, args []string) {
-		sver := viper.GetString("semver")
-		vmsg := viper.GetString("ver-msg")
-		if sver == "" {
-			log.Fatalln("You should execute \"hugo-docs-i18n init\"")
-		}
+		doci18n.LoadVersionInfo()
+		sver := doci18n.GetSemver()
+		vmsg := doci18n.GetVermsg()
 		if isGit, _ := cmd.Flags().GetBool("git"); isGit {
 			fmt.Printf("v%s", sver)
 		} else if isMsg, _ := cmd.Flags().GetBool("msg"); isMsg {

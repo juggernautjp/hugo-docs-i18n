@@ -10,7 +10,7 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	// "github.com/spf13/viper"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
 )
 
@@ -20,67 +20,43 @@ var semverCmd = &cobra.Command{
 	Short: "Set version with SemVer format",
 	Long: `Set the version of hugo-docs-i18n with SemVer format of "<Major>.<Minor>.<Patch>".`,
 	Run: func(cmd *cobra.Command, args []string) {
-		svStr := viper.GetString("semver")
-		if svStr == "" {
-			log.Fatalf("You should execute \"hugo-docs-i18n init\"\n")
-		}
-		sv := doci18n.NewSemver()
-		if err := sv.ForceValue(svStr); err != nil {
-			log.Fatalf("semver in config file is not correct: %s\n", svStr)
-		}
+		doci18n.LoadVersionInfo()
 		// inc flag
 		kindi, _ := cmd.Flags().GetString("inc")
 		switch kindi {
 		case "ma", "major":
-			sv.IncMajor()
+			doci18n.IncMajor()
 		case "mi", "minor":
-			sv.IncMinor()
+			doci18n.IncMinor()
 		case "pa", "patch":
-			sv.IncMinor()
-		}
-		if kindi == "" {
-			log.Fatalf("--inc is empty\n")
-		} else {
-			newv := sv.String()
-			fmt.Printf("New version: %s\n", newv)
-			viper.Set("semver", newv)
-			viper.WriteConfig()
-			os.Exit(0)
+			doci18n.IncPatch()
 		}
 		// prerelease flag
 		pre, _ := cmd.Flags().GetString("prerelease")
-		if pre == "" {
-			log.Fatalf("--prerelease is empty\n")
-		} else {
-			sv.SetPrerelease(pre)
+		if pre != "" {
+			doci18n.SetPrerelease(pre)
 		}
 		// metabuild flag
 		meta, _ := cmd.Flags().GetString("metabuild")
-		if meta == "" {
-			log.Fatalf("--metabuild is empty\n")
-		} else {
-			sv.SetMetabuild(meta)
+		if meta != "" {
+			doci18n.SetMetabuild(meta)
 		}
-		if pre != "" || meta != "" {
-			newv := sv.String()
-			fmt.Printf("New version: %s\n", newv)
-			viper.Set("semver", newv)
-			viper.WriteConfig()
+		if kindi != "" || pre != "" || meta != "" {
+			fmt.Printf("New version: %s\n", doci18n.GetSemver())
+			doci18n.SaveVersionInfo()
 			os.Exit(0)
 		}
 		// force flag
 		ver, _ := cmd.Flags().GetString("force")
 		if ver == "" {
-			log.Fatalf("--force is empty\n")
+			log.Fatalf("--force is not specified: %s\n", ver)
 		}
-		err := sv.ForceValue(ver)
+		err := doci18n.SetSemver(ver)
 		if err != nil {
 			log.Fatalf("--force is not SemVer format: %s\n", ver)
 		} else {
-			newv := sv.String()
-			fmt.Printf("New version: %s\n", newv)
-			viper.Set("semver", newv)
-			viper.WriteConfig()
+			fmt.Printf("New version: %s\n", doci18n.GetSemver())
+			doci18n.SaveVersionInfo()
 			os.Exit(0)
 		}
 	},
