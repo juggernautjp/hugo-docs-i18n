@@ -20,6 +20,9 @@ var semverCmd = &cobra.Command{
 	Short: "Set version with SemVer format",
 	Long: `Set the version of hugo-docs-i18n with SemVer format of "<Major>.<Minor>.<Patch>".`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if !doci18n.CanSetVersionInfo() {
+			log.Fatalf("Error: can not run semver subcommand.\nsemver subcommand is available for developers.\n")
+		}
 		doci18n.LoadVersionInfo()
 		// inc flag
 		kindi, _ := cmd.Flags().GetString("inc")
@@ -43,7 +46,9 @@ var semverCmd = &cobra.Command{
 		}
 		if kindi != "" || pre != "" || meta != "" {
 			fmt.Printf("New version: %s\n", doci18n.GetSemver())
-			doci18n.SaveVersionInfo()
+			if err := doci18n.SaveVersionInfo(); err != nil {
+				log.Fatalf("can not save version.json: %s\n", err)
+			}
 			os.Exit(0)
 		}
 		// force flag
@@ -56,7 +61,9 @@ var semverCmd = &cobra.Command{
 			log.Fatalf("--force is not SemVer format: %s\n", ver)
 		} else {
 			fmt.Printf("New version: %s\n", doci18n.GetSemver())
-			doci18n.SaveVersionInfo()
+			if err := doci18n.SaveVersionInfo(); err != nil {
+				log.Fatalf("can not save version.json: %s\n", err)
+			}
 			os.Exit(0)
 		}
 	},

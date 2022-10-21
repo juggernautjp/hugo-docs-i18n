@@ -116,7 +116,7 @@ func TestSaveLogJSON(t *testing.T) {
 	fn := GetLogFileName()
 	outfn := filepath.Join("testdata", fn)
 	if err := SaveLogJSON(outfn); err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	// 
@@ -125,11 +125,11 @@ func TestSaveLogJSON(t *testing.T) {
 	// Read outfn
 	contentBytes, err := os.ReadFile(outfn)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 	var gotJson LogJSON
 	if err := json.Unmarshal(contentBytes, &gotJson); err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	t.Run("SaveLogJSON", func(t *testing.T) {

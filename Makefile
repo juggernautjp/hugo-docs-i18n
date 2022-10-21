@@ -9,6 +9,7 @@ GOMODTIDY=$(GOCMD) mod tidy
 BINARY_NAME=hugo-docs-i18n.exe
 CONFIG_NAME=hugo-docs-i18n.yaml
 TEST_DIR=content/ja
+DIST_DIR=dist
 TEST_VER=docsi18n/version.json
 BUG_DIR=content/en/myshowcase
 BINARY_UNIX=$(BINARY_NAME)_unix
@@ -39,6 +40,7 @@ clean:
 		rm -f $(BINARY_UNIX)
 		rm -f $(CONFIG_NAME)
 		rm -rf $(TEST_DIR)
+		rm -rf $(DIST_DIR)
 run: $(BINARY_NAME)
 		$(GOBUILD) -o $(BINARY_NAME) -v ./...
 		./$(BINARY_NAME)
@@ -49,6 +51,9 @@ deps:
 		$(GOMODTIDY)
 git-tags: $(BINARY_NAME)
 		git tag -a $(GIT_VER) -m "$(VER_MSG)"
+		git tag -l
+		git ls-remote https://github.com/juggernautjp/hugo-docs-i18n/
+		echo 'git push origin --tags'
 #		git push origin --tags
 git-fix:
 		git config --global --add safe.directory F:/Docs.repo/hugo-docs-i18n

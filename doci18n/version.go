@@ -14,7 +14,11 @@ import (
 	// "io/fs"
 	"encoding/json"
 	// "log"
+	_ "embed"
 )
+
+//go:embed version.json
+var contentBytes []byte
 
 // Global variables
 var GlobalVersionInfo VersionInfo
@@ -28,9 +32,21 @@ type VersionInfo struct {
 	 VerMsg string `json:"vermsg"`
 }
 
+// Can Set Version Info
+func CanSetVersionInfo() bool {
+	return IsExist(VersionFile)
+}
+
+// Initialize Version Info
+func InitVersionInfo() {
+	sv := NewSemver()
+	GlobalVersionInfo.SemVer = sv.String()
+	GlobalVersionInfo.VerMsg = DevVersion
+}
 
 // Load VersionInfo data from JSON
 func LoadVersionInfo() error {
+	// Emberd need "version.json" file
 	if !IsExist(VersionFile) {
 		sv := NewSemver()
 		GlobalVersionInfo.SemVer = sv.String()
@@ -41,6 +57,17 @@ func LoadVersionInfo() error {
 	contentBytes, err := os.ReadFile(VersionFile)
 	if err != nil {
 		return err
+	}
+	if err := json.Unmarshal(contentBytes, &GlobalVersionInfo); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Load VersionInfo data from JSON
+func GetVersionInfo() error {
+	if !IsExist(VersionFile) {
+		return fmt.Errorf("not found VersionFile")
 	}
 	if err := json.Unmarshal(contentBytes, &GlobalVersionInfo); err != nil {
 		return err
