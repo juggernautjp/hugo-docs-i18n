@@ -53,7 +53,7 @@ git-tags: $(BINARY_NAME)
 		git tag -a $(GIT_VER) -m "$(VER_MSG)"
 		git tag -l
 		git ls-remote https://github.com/juggernautjp/hugo-docs-i18n/
-		echo 'git push origin --tags'
+		echo 'execute "git push origin --tags"'
 #		git push origin --tags
 git-fix:
 		git config --global --add safe.directory F:/Docs.repo/hugo-docs-i18n
