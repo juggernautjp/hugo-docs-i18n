@@ -67,3 +67,5 @@ git-fix:
 		git config --global --add safe.directory F:/Docs.repo/hugo-docs-i18n
 now: $(BINARY_NAME)
 		@echo $(NOW) $(GIT_VER) "$(VER_MSG)"
+install:
+		go install github.com/juggernautjp/hugo-docs-i18n@v0.3.3
