@@ -36,7 +36,7 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of hugo-docs-i18n",
 	Long: `All software has versions. This is hugo-docs-i18n's`,
 	Run: func(cmd *cobra.Command, args []string) {
-		doci18n.LoadVersionInfo()
+		doci18n.GetVersionInfo()
 		sver := doci18n.GetSemver()
 		vmsg := doci18n.GetVermsg()
 		if isGit, _ := cmd.Flags().GetBool("git"); isGit {

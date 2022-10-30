@@ -48,17 +48,14 @@ func InitVersionInfo() {
 func LoadVersionInfo() error {
 	// Emberd need "version.json" file
 	if !IsExist(VersionFile) {
-		sv := NewSemver()
-		GlobalVersionInfo.SemVer = sv.String()
-		GlobalVersionInfo.VerMsg = DevVersion
-		return nil
+		return fmt.Errorf("Can not found VersionFile")
 	}
 	// load JSON
-	contentBytes, err := os.ReadFile(VersionFile)
+	cbytes, err := os.ReadFile(VersionFile)
 	if err != nil {
 		return err
 	}
-	if err := json.Unmarshal(contentBytes, &GlobalVersionInfo); err != nil {
+	if err := json.Unmarshal(cbytes, &GlobalVersionInfo); err != nil {
 		return err
 	}
 	return nil
@@ -66,9 +63,6 @@ func LoadVersionInfo() error {
 
 // Load VersionInfo data from JSON
 func GetVersionInfo() error {
-	if !IsExist(VersionFile) {
-		return fmt.Errorf("not found VersionFile")
-	}
 	if err := json.Unmarshal(contentBytes, &GlobalVersionInfo); err != nil {
 		return err
 	}
