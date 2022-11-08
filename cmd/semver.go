@@ -17,8 +17,8 @@ import (
 // semverCmd represents the semver command
 var semverCmd = &cobra.Command{
 	Use:   "semver",
-	Short: "Set version with SemVer format",
-	Long: `Set the version of hugo-docs-i18n with SemVer format of "<Major>.<Minor>.<Patch>".`,
+	Short: "(for Developer) Set version with SemVer format",
+	Long: `(for Developer) Set the version of hugo-docs-i18n with SemVer format of "<Major>.<Minor>.<Patch>".`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !doci18n.CanSetVersionInfo() {
 			log.Fatalf("Error: can not run semver subcommand.\nsemver subcommand is available for developers.\n")

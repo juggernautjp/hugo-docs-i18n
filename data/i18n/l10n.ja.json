@@ -1,0 +1,60 @@
+{ 
+  "translation": [
+    {
+      "key": "rootCmdShort", 
+      "message": "Hugo ドキュメントの翻訳環境を構築および管理するツール群です" 
+    },
+    {
+      "key": "rootCmdLong", 
+      "message": "hugo-docs-i18n は、Hugo ドキュメントをあなたの言語に翻訳するための環境を初期化し、管理するためのツール群です。" 
+    },
+    {
+      "key": "initCmdShort", 
+      "message": "Hugo ドキュメント翻訳環境の設定ファイルの初期化します" 
+    },
+    {
+      "key": "initCmdLong", 
+      "message": "Hugo ドキュメントをローカライズするための設定ファイルを生成します。" 
+    },
+    {
+      "key": "collectCmdShort", 
+      "message": "翻訳の進捗状況の統計データを収集します" 
+    },
+    {
+      "key": "collectCmdLong", 
+      "message": "翻訳済み/未翻訳のファイル数、およびファイルの翻訳済み率を出力します。\n\nデータは \"data/i18n/<code>.json\" に保存され、ページに表示されます。" 
+    },
+    {
+      "key": "convertCmdShort", 
+      "message": "ISO 639-1 標準言語コードからロケールデータベースを作成します" 
+    },
+    {
+      "key": "convertCmdLong", 
+      "message": "Hugo-docs-i18n init コマンドには、翻訳された言語のロケール コードが必要です。\nこのコマンドは、次の Markdown ファイルからロケール データベースを作成します:\n\nISO 639-1 標準言語コード:\nhttps://www.andiamo.co.uk/resources/iso-language-codes/\n\n上記のファイルは \"data/ISO_639-1.md\" として保存され、\n\nJSON ファイル \"data/ISO_639-1.json\" に変換されます。" 
+    },
+    {
+      "key": "searchCmdShort", 
+      "message": "翻訳対象言語のロケールコードを検索します" 
+    },
+    {
+      "key": "searchCmdLong", 
+      "message": "言語ロケール コードがわからない場合は、このコマンドで検索するか\nまたは次の Web ページで検索できます:\n\nISO 639-1 標準言語コード:\nhttps://www.andiamo.co.uk/resources/iso-language-codes/" 
+    },
+    {
+      "key": "updateCmdShort", 
+      "message": "英語からターゲット言語へコンテンツ ファイルをコピーし、更新します" 
+    },
+    {
+      "key": "updateCmdLong", 
+      "message": "英語で記述されたコンテンツ ファイルを \"content/<code>\" ディレクトリにコピーし、更新します。\nこのコマンドを実行する前に、\"hugo-docs-i18n init\" を実行する必要があります。" 
+    },
+    {
+      "key": "versionCmdShort", 
+      "message": "hugo-docs-i18n コマンドのバージョン情報を表示します" 
+    },
+    {
+      "key": "versionCmdLong", 
+      "message": "hugo-docs-i18n コマンドのバージョン情報を表示します。\nまた、この情報は semver コマンドに使用されます。" 
+    }
+  ]
+}

@@ -28,13 +28,14 @@ import (
 	"github.com/spf13/cobra"
 	// "github.com/spf13/viper"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
+	"github.com/juggernautjp/hugo-docs-i18n/locale"
 )
 
 // versionCmd represents the version command
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version number of hugo-docs-i18n",
-	Long: `All software has versions. This is hugo-docs-i18n's`,
+	Short: locale.T("versionCmdShort"),
+	Long: locale.T("versionCmdLong"),
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := doci18n.GetVersionInfo(); err != nil {
 			log.Fatalln("Error: not get version information.")

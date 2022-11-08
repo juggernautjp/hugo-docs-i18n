@@ -31,7 +31,7 @@ import (
 // outputCmd represents the output command
 var outputCmd = &cobra.Command{
 	Use:   "output",
-	Short: "(for testing) output all configuration registries",
+	Short: "(for testing) Output all configuration registries",
 	Long: `Debug prints all configuration registries for debugging purposes.
 	viper package provide debug function.`,
 	Run: func(cmd *cobra.Command, args []string) {

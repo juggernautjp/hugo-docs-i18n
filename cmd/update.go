@@ -29,14 +29,14 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
+	"github.com/juggernautjp/hugo-docs-i18n/locale"
 )
 
 // updateCmd represents the update command
 var updateCmd = &cobra.Command{
 	Use:   "update",
-	Short: "Copy and update content files from English to target language",
-	Long: `Copy and update content files written in English to content/<code> directory.
-Before execute this command, you should run "hugo-docs-i18n init".`,
+	Short: locale.T("updateCmdShort"),
+	Long: locale.T("updateCmdLong"),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("update called")
 		srcdir := viper.GetString("source-dir")

@@ -27,22 +27,25 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
+	// "github.com/spf13/viper"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
+	"github.com/juggernautjp/hugo-docs-i18n/locale"
 )
 
-// Const
-const config_name = "hugo-docs-i18n.yaml"
+/* Remarks:
+	if config file dose not exist, viper.ConfigFileUsed() return "".
 
+*/
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Hugo ドキュメント翻訳環境の設定ファイルの初期化",
-	Long: `Generate a configuration file for localization of Hugo Documentation.`,
+	Short: locale.T("initCmdShort"),
+	Long: locale.T("initCmdShort"),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Generating config file: %s ...", config_name)
+		fmt.Printf("Generating config file: %s ...\n", configFn)
 		// Generate initial config file
-		if err := doci18n.SaveConfigFile(config_name); err != nil {
+		if err := doci18n.SaveConfigFile(configFn); err != nil {
 			log.Fatalf(`Can not generate config file: %s`, err)
 		}
 	},

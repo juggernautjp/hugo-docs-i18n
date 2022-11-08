@@ -28,7 +28,11 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/juggernautjp/hugo-docs-i18n/locale"
 )
+
+// Const
+const configFn = "hugo-docs-i18n.yaml"
 
 // Const & Variables
 var cfgFile string
@@ -36,9 +40,8 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "hugo-docs-i18n",
-	Short: "Hugo ドキュメントの翻訳環境を構築および管理するツールセット",
-	Long:  `hugo-docs-i18n is a set of tools to initialize and manage the environment
-	to translate Hugo Documentation in you language.`,
+	Short: locale.T("rootCmdShort"),
+	Long:  locale.T("rootCmdLong"),
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -55,6 +58,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -78,13 +82,13 @@ func initConfig() {
 		// Search config in current directory with name "hugo-docs-i18n.yaml".
 		viper.AddConfigPath(pwd)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName("hugo-docs-i18n.yaml")
+		viper.SetConfigName(configFn)
 	}
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintf(os.Stderr, "Using config file: %s\n", viper.ConfigFileUsed())
+		// fmt.Fprintf(os.Stderr, "Using config file: %s\n", viper.ConfigFileUsed())
 	} else {
 		// fmt.Fprintf(os.Stderr, "Error when read config: %s\n", viper.ConfigFileUsed())
 	}

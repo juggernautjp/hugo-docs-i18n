@@ -30,16 +30,14 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
+	"github.com/juggernautjp/hugo-docs-i18n/locale"
 )
 
 // collectCmd represents the collect command
 var collectCmd = &cobra.Command{
 	Use:   "collect",
-	Short: "Collect statistics of translation progress",
-	Long: `Output the number of translated/not-translated files, 
-and what percentage of the files have been translated.
-
-The data is stored "data/i18n/<code>.json, and show the page.`,
+	Short: locale.T("collectCmdShort"),
+	Long: locale.T("collectCmdLong"),
 	Run: func(cmd *cobra.Command, args []string) {
 		// tdir := viper.GetString("target-dir")
 		// tcode := viper.GetString("target-code")

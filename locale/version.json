@@ -1,0 +1,12 @@
+{ 
+  "translation": [
+    { 
+      "key": "rootCmdShort", 
+      "message": "rootCmdShort EnMessage" 
+    },
+    { 
+      "key": "rootCmdLong", 
+      "message": "rootCmdLong EnMessage" 
+    }
+  ]
+}

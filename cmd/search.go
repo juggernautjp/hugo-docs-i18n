@@ -28,19 +28,15 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/juggernautjp/hugo-docs-i18n/locale"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
+	"github.com/juggernautjp/hugo-docs-i18n/locale"
 )
 
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
 	Use:   "search",
-	Short: "Search locale code for target translation language",
-	Long: `If you do not know your language locale code, you can search it with this command 
-or the following web page:
-
-ISO 639-1 standard language codes:
-  https://www.andiamo.co.uk/resources/iso-language-codes/`,
+	Short: locale.T("searchCmdShort"),
+	Long: locale.T("searchCmdLong"),
 	Run: func(cmd *cobra.Command, args []string) {
 		// tl := viper.GetString("lang")
 		// tc := viper.GetString("code")

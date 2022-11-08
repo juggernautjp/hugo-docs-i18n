@@ -31,7 +31,7 @@ import (
 // resetCmd represents the reset command
 var resetCmd = &cobra.Command{
 	Use:   "reset",
-	Short: "(for testing) reset all to default settings",
+	Short: "(for testing) Reset all to default settings",
 	Long: `Reset is intended for testing, will reset all to default settings.
 viper package provide reset function for testing.`,
 	Run: func(cmd *cobra.Command, args []string) {

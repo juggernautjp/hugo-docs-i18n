@@ -1,0 +1,60 @@
+{ 
+  "translation": [
+    {
+      "key": "rootCmdShort", 
+      "message": "A set of tools to build and manage the Hugo documentation translation environment" 
+    },
+    {
+      "key": "rootCmdLong", 
+      "message": "hugo-docs-i18n is a set of tools to initialize and manage the environment to translate Hugo Documentation in you language." 
+    },
+    {
+      "key": "initCmdShort", 
+      "message": "Initialization of the configuration file for the Hugo Document Translation Environment" 
+    },
+    {
+      "key": "initCmdLong", 
+      "message": "Generate a configuration file for localization of Hugo Documentation." 
+    },
+    {
+      "key": "collectCmdShort", 
+      "message": "Collect statistics of translation progress" 
+    },
+    {
+      "key": "collectCmdLong", 
+      "message": "Output the number of translated/not-translated files,\n and what percentage of the files have been translated.\n\nThe data is stored \"data/i18n/<code>.json\", and show the page." 
+    },
+    {
+      "key": "convertCmdShort", 
+      "message": "Create Locale Database from ISO 639-1 standard language codes" 
+    },
+    {
+      "key": "convertCmdLong", 
+      "message": "hugo-docs-i18n init command need locale code for translated language.\nThis command create locale database from the Markdown file of the follows:\n\nISO 639-1 standard language codes:\nhttps://www.andiamo.co.uk/resources/iso-language-codes/\n\nThe above file is saved as \"data/ISO_639-1.md\",\nand will be converted to JSON file as \"data/ISO_639-1.json\"." 
+    },
+    {
+      "key": "searchCmdShort", 
+      "message": "Search locale code for target translation language" 
+    },
+    {
+      "key": "searchCmdLong", 
+      "message": "If you do not know your language locale code, you can search it with this command\nor the following web page:\n\nISO 639-1 standard language codes:\nhttps://www.andiamo.co.uk/resources/iso-language-codes/" 
+    },
+    {
+      "key": "updateCmdShort", 
+      "message": "Copy and update content files from English to target language" 
+    },
+    {
+      "key": "updateCmdLong", 
+      "message": "Copy and update content files written in English to \"content/<code>\" directory.\nBefore execute this command, you should execute \"hugo-docs-i18n init\"." 
+    },
+    {
+      "key": "versionCmdShort", 
+      "message": "Print the version number of hugo-docs-i18n" 
+    },
+    {
+      "key": "versionCmdLong", 
+      "message": "Print the version number of hugo-docs-i18n. \nAlso, this information is used for developers." 
+    }
+  ]
+}

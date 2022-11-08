@@ -1,0 +1,12 @@
+{ 
+  "translation": [
+    { 
+      "key": "rootCmdShort", 
+      "message": "rootCmdShort JaMessage" 
+    },
+    { 
+      "key": "rootCmdLong", 
+      "message": "rootCmdLong JaMessage" 
+    }
+  ]
+}

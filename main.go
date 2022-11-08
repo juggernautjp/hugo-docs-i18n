@@ -21,7 +21,9 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/juggernautjp/hugo-docs-i18n/cmd"
+import (
+	"github.com/juggernautjp/hugo-docs-i18n/cmd"
+)
 
 func main() {
 	cmd.Execute()

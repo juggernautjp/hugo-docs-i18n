@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/Tobotobo/powershell v0.1.1 // indirect
 	github.com/bep/godartsass v0.14.0 // indirect
 	github.com/bep/golibsass v1.1.0 // indirect
 	github.com/clbanning/mxj/v2 v2.5.6 // indirect
@@ -17,6 +18,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/hnakamur/go-powershell v0.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect

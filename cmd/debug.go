@@ -30,10 +30,10 @@ import (
 // debugCmd represents the debug command
 var debugCmd = &cobra.Command{
 	Use:   "debug",
-	Short: "(for testing) reset and output configuration",
+	Short: "(for testing) Reset and output configuration",
 	Long: `Debug has two subcommands:
-	1. output: print all configurations
-	2. reset: reset all to default settings
+	1. output: Print all configurations
+	2. reset: Reset all to default settings
 debug command do nothing without subcommands.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("debug called")

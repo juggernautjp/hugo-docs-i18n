@@ -29,22 +29,15 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/juggernautjp/hugo-docs-i18n/locale"
 	"github.com/juggernautjp/hugo-docs-i18n/doci18n"
+	"github.com/juggernautjp/hugo-docs-i18n/locale"
 )
 
 // localedbCmd represents the localedb command
 var convertCmd = &cobra.Command{
 	Use:   "convert",
-	Short: "Create Locale Database from ISO 639-1 standard language codes",
-	Long: `hugo-docs-i18n init command need locale code for translated language.
-This command create locale database from the Markdown file of the follows:
-
-ISO 639-1 standard language codes:
-  https://www.andiamo.co.uk/resources/iso-language-codes/
-
-The above file is saved as data/ISO_639-1.md,
-and will be converted to JSON file as data/ISO_639-1.json.`,
+	Short: locale.T("convertCmdShort"),
+	Long: locale.T("convertCmdLong"),
 	Run: func(cmd *cobra.Command, args []string) {
 		datadir := viper.GetString("data-dir")
 		// infn := viper.GetString("md")
