@@ -62,7 +62,7 @@ func GetLogFileName() string {
 	if err != nil {
 		panic(err)
 	}
-	return fmt.Sprintf("%s.log", t.In(tz).Format(shortForm))
+	return fmt.Sprintf("%s.json", t.In(tz).Format(shortForm))
 }
 
 // Get Now() string

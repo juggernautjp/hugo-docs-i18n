@@ -45,7 +45,7 @@ func (cd *CountDraft) Sum() int {
 	if cd.Total == 0 {
 		cd.Ratio = 0
 	} else {
-		cd.Ratio = float32(cd.NotDraft) / float32(cd.Total)
+		cd.Ratio = float32(cd.NotDraft) / float32(cd.Total) *100.0
 	}
 	return cd.Total
 }
